@@ -190,11 +190,15 @@ void callback(const ImageConstPtr &depth, const GroundPlane::ConstPtr &gp, const
         ROS_ERROR_THROTTLE(5.0, "Depth input image provided to upper-body detector has wrong encoding! 32FC1 is required (depth in meters), "
             "usually offered by the registered/rectified depth image. Maybe you are remapping the input topic incorrectly to the unregistered, "
             "raw image of type 16UC1 (depth in millimeters)?");
+    
+    //std::cout << "Encoding is actually: " << depth->encoding << std::endl;
+
         return;
     }
 
     // Get depth image as matrix
     cv_depth_ptr = cv_bridge::toCvCopy(depth);
+//    cv_depth_ptr = cv_bridge::toCvCopy(depth,"CV_32FC1");
     img_depth_ = cv_depth_ptr->image;
     Matrix<double> matrix_depth(info->width, info->height);
     for (int r = 0;r < 480;r++){
@@ -355,8 +359,8 @@ int main(int argc, char **argv)
     private_node_handle_.param("camera_namespace", cam_ns, string("/camera"));
     private_node_handle_.param("ground_plane", topic_gp, string("/ground_plane"));
 
-    topic_color_image = cam_ns + "/rgb/image_rect_color";
-    string topic_depth_image = cam_ns + "/depth/image_rect";
+    topic_color_image = cam_ns + "/color/image_rect_color";
+    string topic_depth_image = cam_ns + "/depth/image_rect_raw";
     string topic_camera_info = cam_ns + "/depth/camera_info";
 
     // New parameters for SPENCER
@@ -395,6 +399,11 @@ int main(int argc, char **argv)
     subscriber_depth.subscribe(it, topic_depth_image.c_str(),1); subscriber_depth.unsubscribe();
     message_filters::Subscriber<CameraInfo> subscriber_camera_info(n, topic_camera_info.c_str(), 1); subscriber_camera_info.unsubscribe();
     message_filters::Subscriber<GroundPlane> subscriber_gp(n, topic_gp.c_str(), 1); subscriber_gp.unsubscribe();
+
+    std::cout << "camera info topic name " << topic_camera_info.c_str() << std::endl;
+    std::cout << "depth topic name " << topic_depth_image.c_str() << std::endl;
+    std::cout << "color image topic name " << topic_color_image.c_str() << std::endl;
+    std::cout << "ground plane topic name " << topic_gp.c_str() << std::endl;
 
     ros::SubscriberStatusCallback con_cb = boost::bind(&connectCallback,
                                                        boost::ref(subscriber_camera_info),
