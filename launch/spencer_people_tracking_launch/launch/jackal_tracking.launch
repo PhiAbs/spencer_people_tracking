@@ -3,6 +3,9 @@
     <arg name="use_pcl_detector" default="false"/> <!-- use ROI-HOG detector from PCL library? cannot be used with upper-body detector at the same time! -->
     <arg name="use_hog_detector" default="false"/> <!-- use RGB groundHOG detector? Requires cudaHOG library-->
 
+    <arg name="visualization" default="true"/>
+    <arg name="rviz_config_file" default="$(find spencer_people_tracking_launch)/rviz/tracking-rgbd-laser.rviz"/>
+
     <!-- RGB-D detectors -->
         <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_front_rgbd_detectors.launch">
         <arg name="upper_body" value="$(arg use_upper_body_detector)"/>
@@ -21,5 +24,8 @@
 
     <!-- Group tracking OFF -->
     <!-- <include file="$(find spencer_people_tracking_launch)/launch/tracking/group_tracking.launch"/> -->
+
+    <!-- VISUALIZATION -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config_file)" required="false" if="$(arg visualization)"/>
 
 </launch>
