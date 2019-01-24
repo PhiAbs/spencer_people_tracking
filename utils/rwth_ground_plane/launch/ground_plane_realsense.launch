@@ -1,0 +1,11 @@
+<launch>
+    <arg name="ground_plane" value="/spencer/sensors/rgbd_front_top/ground_plane"/>
+   
+    <node pkg="rwth_ground_plane" type="ground_plane_tf_based_fixed" name="ground_plane_front_top" output="screen">
+        <param name="base_footprint" value="base_link" type="string"/>
+        <param name="camera_frame" value="camera_link" type="string"/>
+        <param name="camera_namespace" value="/camera" type="string"/>
+        <param name="ground_plane" value="$(arg ground_plane)" type="string"/>
+        <param name="rate" value="30.0"/>
+    </node>
+</launch>

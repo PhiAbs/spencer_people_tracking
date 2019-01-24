@@ -43,6 +43,7 @@ void ReadConfigFile(string path_config_file)
 
     ConfigFile config(path_config_file);
 
+
     /////////////////////////////////GP Estimator/////////////////////////
     Globals::nrInter_ransac = config.read<int>("nrInter_ransac");
     Globals::numberOfPoints_reconAsObstacle = config.read<int>("numberOfPoints_reconAsObstacle");
@@ -121,9 +122,9 @@ int main(int argc, char **argv)
     private_node_handle_.param("queue_size", queue_size, int(5));
     private_node_handle_.param("config_file", config_file, string(""));
 
-    private_node_handle_.param("camera_namespace", cam_ns, string("/head_xtion"));
-    string topic_depth_image = cam_ns + "/depth/image";
-    string topic_camera_info = cam_ns + "/rgb/camera_info";
+    private_node_handle_.param("camera_namespace", cam_ns, string("/camera"));
+    string topic_depth_image = cam_ns + "/depth/image_rect_raw";
+    string topic_camera_info = cam_ns + "/color/camera_info";
 
     if(strcmp(config_file.c_str(),"") == 0) {
         ROS_ERROR("No config file specified.");
