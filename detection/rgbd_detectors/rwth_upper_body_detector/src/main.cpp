@@ -185,23 +185,38 @@ void callback(const ImageConstPtr &depth, const GroundPlane::ConstPtr &gp, const
     if(!detect && !vis)
         return;
 
-    // Verify depth image is of correct format
-    if(depth->encoding != image_encodings::TYPE_32FC1) {
-        ROS_ERROR_THROTTLE(5.0, "Depth input image provided to upper-body detector has wrong encoding! 32FC1 is required (depth in meters), "
+    	cv_depth_ptr = cv_bridge::toCvCopy(depth);
+    	img_depth_ = cv_depth_ptr->image;
+    	Matrix<double> matrix_depth(info->width, info->height);
+    
+	// Verify depth image is of correct format
+    if(depth->encoding == image_encodings::TYPE_32FC1) {
+    /*    ROS_ERROR_THROTTLE(5.0, "Depth input image provided to upper-body detector has wrong encoding! 32FC1 is required (depth in meters), "
             "usually offered by the registered/rectified depth image. Maybe you are remapping the input topic incorrectly to the unregistered, "
             "raw image of type 16UC1 (depth in millimeters)?");
-        return;
-    }
+        return;*/
+    
 
-    // Get depth image as matrix
-    cv_depth_ptr = cv_bridge::toCvCopy(depth);
-    img_depth_ = cv_depth_ptr->image;
-    Matrix<double> matrix_depth(info->width, info->height);
-    for (int r = 0;r < 480;r++){
-        for (int c = 0;c < 640;c++) {
-            matrix_depth(c, r) = img_depth_.at<float>(r,c);
+    	// Get depth image as matrix
+    	for (int r = 0;r < 480;r++){
+        	for (int c = 0;c < 640;c++) {
+            	matrix_depth(c, r) = img_depth_.at<float>(r,c);
+            }
         }
     }
+    else if(depth->encoding == image_encodings::TYPE_16UC1)
+    {
+    	for (int r = 0;r < 480;r++){
+        	for (int c = 0;c < 640;c++) {
+            	matrix_depth(c, r) = img_depth_.at<uchar>(r,c);
+            }
+        }
+    }
+    else 
+    {
+	ROS_ERROR("WRONG ENCODING OF THE DEPTH IMAGE");
+    }  
+
 
     // Generate base camera
     Matrix<double> R = Eye<double>(3);
