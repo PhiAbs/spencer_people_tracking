@@ -2,7 +2,7 @@
 ### FIXME: First associate e.g. front HOG + laser, afterwards aggregate front & rear! (Otherwise association is more costly, and remember it is O(n²!))
 subscription_method: synchronize_all
 disabled_topic_regex: [ '.*rgbd_rear.*']
-common_frame_id: base_footprint
+common_frame_id: base_link
 inputs:
 #
 # Fuse aggregated HOG and already fused upper-body+laser
