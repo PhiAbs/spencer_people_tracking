@@ -184,39 +184,28 @@ void callback(const ImageConstPtr &depth, const GroundPlane::ConstPtr &gp, const
 
     if(!detect && !vis)
         return;
-
-    	cv_depth_ptr = cv_bridge::toCvCopy(depth);
-    	img_depth_ = cv_depth_ptr->image;
-    	Matrix<double> matrix_depth(info->width, info->height);
-    
-	// Verify depth image is of correct format
-    if(depth->encoding == image_encodings::TYPE_32FC1) {
-    /*    ROS_ERROR_THROTTLE(5.0, "Depth input image provided to upper-body detector has wrong encoding! 32FC1 is required (depth in meters), "
+/*
+    // Verify depth image is of correct format
+    if(depth->encoding != image_encodings::TYPE_32FC1) {
+        ROS_ERROR_THROTTLE(5.0, "Depth input image provided to upper-body detector has wrong encoding! 32FC1 is required (depth in meters), "
             "usually offered by the registered/rectified depth image. Maybe you are remapping the input topic incorrectly to the unregistered, "
             "raw image of type 16UC1 (depth in millimeters)?");
-        return;*/
     
+    //std::cout << "Encoding is actually: " << depth->encoding << std::endl;
 
-    	// Get depth image as matrix
-    	for (int r = 0;r < 480;r++){
-        	for (int c = 0;c < 640;c++) {
-            	matrix_depth(c, r) = img_depth_.at<float>(r,c);
-            }
+        return;
+    }
+*/
+    // Get depth image as matrix
+    cv_depth_ptr = cv_bridge::toCvCopy(depth);
+//    cv_depth_ptr = cv_bridge::toCvCopy(depth,"CV_32FC1");
+    img_depth_ = cv_depth_ptr->image;
+    Matrix<double> matrix_depth(info->width, info->height);
+    for (int r = 0;r < 480;r++){
+        for (int c = 0;c < 640;c++) {
+            matrix_depth(c, r) = img_depth_.at<float>(r,c);
         }
     }
-    else if(depth->encoding == image_encodings::TYPE_16UC1)
-    {
-    	for (int r = 0;r < 480;r++){
-        	for (int c = 0;c < 640;c++) {
-            	matrix_depth(c, r) = img_depth_.at<uchar>(r,c);
-            }
-        }
-    }
-    else 
-    {
-	ROS_ERROR("WRONG ENCODING OF THE DEPTH IMAGE");
-    }  
-
 
     // Generate base camera
     Matrix<double> R = Eye<double>(3);
@@ -410,6 +399,11 @@ int main(int argc, char **argv)
     subscriber_depth.subscribe(it, topic_depth_image.c_str(),1); subscriber_depth.unsubscribe();
     message_filters::Subscriber<CameraInfo> subscriber_camera_info(n, topic_camera_info.c_str(), 1); subscriber_camera_info.unsubscribe();
     message_filters::Subscriber<GroundPlane> subscriber_gp(n, topic_gp.c_str(), 1); subscriber_gp.unsubscribe();
+
+    std::cout << "camera info topic name " << topic_camera_info.c_str() << std::endl;
+    std::cout << "depth topic name " << topic_depth_image.c_str() << std::endl;
+    std::cout << "color image topic name " << topic_color_image.c_str() << std::endl;
+    std::cout << "ground plane topic name " << topic_gp.c_str() << std::endl;
 
     ros::SubscriberStatusCallback con_cb = boost::bind(&connectCallback,
                                                        boost::ref(subscriber_camera_info),
