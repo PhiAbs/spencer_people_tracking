@@ -178,12 +178,14 @@ void colorImageCallback(const ImageConstPtr &color) {
 
 void callback(const ImageConstPtr &depth, const GroundPlane::ConstPtr &gp, const CameraInfoConstPtr &info)
 {
-    // Check if calculation is necessary
+    //ROS_ERROR("check if calculation is necessary");
     bool detect = pub_message.getNumSubscribers() > 0 || pub_centres.getNumSubscribers() > 0 || pub_detected_persons.getNumSubscribers() > 0;
     bool vis = pub_result_image.getNumSubscribers() > 0;
 
     if(!detect && !vis)
         return;
+
+		cv::Mat cv_frame32 = cv_bridge::toCvCopy(depth,sensor_msgs::image_encodings::TYPE_16UC1)->image; 
 
     	cv_depth_ptr = cv_bridge::toCvCopy(depth);
     	img_depth_ = cv_depth_ptr->image;
@@ -200,17 +202,22 @@ void callback(const ImageConstPtr &depth, const GroundPlane::ConstPtr &gp, const
     	// Get depth image as matrix
     	for (int r = 0;r < 480;r++){
         	for (int c = 0;c < 640;c++) {
-            	matrix_depth(c, r) = img_depth_.at<float>(r,c);
+            	matrix_depth(c, r) = img_depth_.at<float>(r,c)/1000.0;
             }
         }
     }
     else if(depth->encoding == image_encodings::TYPE_16UC1)
     {
+		//ROS_ERROR("TYPE_16UC1");
     	for (int r = 0;r < 480;r++){
         	for (int c = 0;c < 640;c++) {
-            	matrix_depth(c, r) = img_depth_.at<uchar>(r,c);
+            	matrix_depth(c, r) = cv_frame32.at<unsigned short>(r,c)/1000.0;
+            	//ROS_INFO_STREAM("Publishing detections: " << matrix_depth(c, r));
+            	//ROS_ERROR_STREAM("Publishing : " <<img_depth_.at<unsigned short>(r,c)/1000);
+            	//ROS_WARN_STREAM("Publishing : " <<cv_frame32.at<unsigned short>(r,c));
             }
         }
+        
     }
     else 
     {
@@ -310,7 +317,7 @@ void callback(const ImageConstPtr &depth, const GroundPlane::ConstPtr &gp, const
         }
     }
 
-    // Publishing detections
+    
     pub_message.publish(detection_msg);
     pub_centres.publish(bb_centres);
     pub_detected_persons.publish(detected_persons);
@@ -370,7 +377,7 @@ int main(int argc, char **argv)
     private_node_handle_.param("camera_namespace", cam_ns, string("/camera"));
     private_node_handle_.param("ground_plane", topic_gp, string("/ground_plane"));
 
-    topic_color_image = cam_ns + "/color/image_rect_color";
+    topic_color_image = cam_ns + "/color/image_raw"; // "/color/image_rect_color";
     string topic_depth_image = cam_ns + "/depth/image_rect_raw";
     string topic_camera_info = cam_ns + "/depth/camera_info";
 

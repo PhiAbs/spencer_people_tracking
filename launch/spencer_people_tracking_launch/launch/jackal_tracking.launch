@@ -7,12 +7,12 @@
     <arg name="rviz_config_file" default="$(find spencer_people_tracking_launch)/rviz/tracking-rgbd-laser.rviz"/>
 
     <!-- RGB-D detectors -->
-        <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_front_rgbd_detectors.launch">
+    <!--    <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_front_rgbd_detectors.launch">
         <arg name="upper_body" value="$(arg use_upper_body_detector)"/>
         <arg name="pcl_detector" value="$(arg use_pcl_detector)"/>
         <arg name="hog" value="$(arg use_hog_detector)"/>
     </include>
-
+-->
     <!-- Laser detectors -->
     <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_laser_detectors.launch"/> 
 
