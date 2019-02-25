@@ -45,7 +45,7 @@ Visualization Manager:
           Value: true
         rgbd_front_top_depth_frame:
           Value: true
-        rgbd_front_top_depth_optical_frame:
+        spencer/sensors/rgbd_front_top_depth_optical_frame:
           Value: true
         rgbd_front_top_link:
           Value: true
@@ -63,7 +63,7 @@ Visualization Manager:
           base_footprint:
             rgbd_front_top_link:
               rgbd_front_top_depth_frame:
-                rgbd_front_top_depth_optical_frame:
+                spencer/sensors/rgbd_front_top_depth_optical_frame:
                   {}
               rgbd_front_top_rgb_frame:
                 rgbd_front_top_rgb_optical_frame:

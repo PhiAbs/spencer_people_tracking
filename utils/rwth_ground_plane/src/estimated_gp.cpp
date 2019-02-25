@@ -112,6 +112,7 @@ int main(int argc, char **argv)
     // Declare variables that can be modified by launch file or command line.
     int queue_size;
     string cam_ns;
+    string adaptor_ns;
     string pub_topic_gp;
     string config_file;
 
@@ -123,7 +124,8 @@ int main(int argc, char **argv)
     private_node_handle_.param("config_file", config_file, string(""));
 
     private_node_handle_.param("camera_namespace", cam_ns, string("/camera"));
-    string topic_depth_image = cam_ns + "/depth/image_rect_raw";
+    private_node_handle_.param("realsense_adaptor_ns", adaptor_ns, string("/converter/rgbd_front_top"));
+    string topic_depth_image = adaptor_ns + "/depth/image_rect";
     string topic_camera_info = cam_ns + "/color/camera_info";
 
     if(strcmp(config_file.c_str(),"") == 0) {

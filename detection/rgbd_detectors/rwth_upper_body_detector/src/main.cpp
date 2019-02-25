@@ -357,6 +357,7 @@ int main(int argc, char **argv)
     // Declare variables that can be modified by launch file or command line.
     int queue_size;
     string cam_ns;
+    string adaptor_ns;
     string config_file;
     string template_path;
     string topic_gp;
@@ -375,10 +376,11 @@ int main(int argc, char **argv)
     private_node_handle_.param("template_file", template_path, string(""));
 
     private_node_handle_.param("camera_namespace", cam_ns, string("/camera"));
+    private_node_handle_.param("realsense_adaptor_ns", adaptor_ns, string("/converter/rgbd_front_top"));
     private_node_handle_.param("ground_plane", topic_gp, string("/ground_plane"));
 
     topic_color_image = cam_ns + "/color/image_raw"; // "/color/image_rect_color";
-    string topic_depth_image = cam_ns + "/depth/image_rect_raw";
+    string topic_depth_image = adaptor_ns + "/depth/image_rect";
     string topic_camera_info = cam_ns + "/depth/camera_info";
 
     // New parameters for SPENCER

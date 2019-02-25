@@ -1,4 +1,7 @@
 <launch>
+    <!-- Launch file arguments -->
+    <arg name="height_above_ground" default="1.6"/>  <!-- in meters, assumes a horizontally oriented RGB-D sensor; important for accurate detection -->
+    <arg name="dummy_transforms" default="true"/> <!-- publish TF transform for sensor to groundplane -->
     <arg name="use_upper_body_detector" default="true"/> <!-- use depth-template-based upper-body detector? -->
     <arg name="use_pcl_detector" default="false"/> <!-- use ROI-HOG detector from PCL library? cannot be used with upper-body detector at the same time! -->
     <arg name="use_hog_detector" default="false"/> <!-- use RGB groundHOG detector? Requires cudaHOG library-->
@@ -6,20 +9,36 @@
     <arg name="visualization" default="true"/>
     <arg name="rviz_config_file" default="$(find spencer_people_tracking_launch)/rviz/tracking-rgbd-laser.rviz"/>
 
+
+    <!-- Camera -->
+    <!-- <include file="$(find semester_project)/launch/rs_d400_custom.launch">
+    </include> -->
+
+    <!-- Set ground plane distance -->
+    <rosparam param="/spencer/perception_internal/people_detection/ground_plane/distance" subst_value="true">$(arg height_above_ground)</rosparam>
+
+    <!-- Set up dummy transforms into an imaginary robot and odom frame -->
+    <group if="$(arg dummy_transforms)">
+        <node name="tf_base_footprint" pkg="tf" type="static_transform_publisher" args="0 0 $(arg height_above_ground) 0 0 0 base_footprint rgbd_front_top_link 10"/>
+        <node name="tf_odom"           pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 odom base_footprint 10"/>
+        <node name="tf_base_link"      pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 odom base_link 10"/>
+    </group>
+
+
     <!-- RGB-D detectors -->
-    <!--    <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_front_rgbd_detectors.launch">
+       <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_front_rgbd_detectors.launch">
         <arg name="upper_body" value="$(arg use_upper_body_detector)"/>
         <arg name="pcl_detector" value="$(arg use_pcl_detector)"/>
         <arg name="hog" value="$(arg use_hog_detector)"/>
     </include>
--->
-    <!-- Laser detectors -->
-    <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_laser_detectors.launch"/> 
+
+    <!-- Laser detectors OFF -->
+    <!-- <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_laser_detectors.launch"/>  -->
 
     <!-- People tracking -->
     <include file="$(find spencer_people_tracking_launch)/launch/tracking/freiburg_people_tracking.launch">
         <arg name="rgbd" default="true"/>
-        <arg name="laser_low_confidence_detections" default="true"/>
+        <arg name="laser_low_confidence_detections" default="false"/>
     </include>
 
     <!-- Group tracking OFF -->
