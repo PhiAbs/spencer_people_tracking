@@ -178,52 +178,30 @@ void colorImageCallback(const ImageConstPtr &color) {
 
 void callback(const ImageConstPtr &depth, const GroundPlane::ConstPtr &gp, const CameraInfoConstPtr &info)
 {
-    //ROS_ERROR("check if calculation is necessary");
+    // Check if calculation is necessary
     bool detect = pub_message.getNumSubscribers() > 0 || pub_centres.getNumSubscribers() > 0 || pub_detected_persons.getNumSubscribers() > 0;
     bool vis = pub_result_image.getNumSubscribers() > 0;
 
     if(!detect && !vis)
         return;
 
-		cv::Mat cv_frame32 = cv_bridge::toCvCopy(depth,sensor_msgs::image_encodings::TYPE_16UC1)->image; 
-
-    	cv_depth_ptr = cv_bridge::toCvCopy(depth);
-    	img_depth_ = cv_depth_ptr->image;
-    	Matrix<double> matrix_depth(info->width, info->height);
-    
-	// Verify depth image is of correct format
-    if(depth->encoding == image_encodings::TYPE_32FC1) {
-    /*    ROS_ERROR_THROTTLE(5.0, "Depth input image provided to upper-body detector has wrong encoding! 32FC1 is required (depth in meters), "
+    // Verify depth image is of correct format
+    if(depth->encoding != image_encodings::TYPE_32FC1) {
+        ROS_ERROR_THROTTLE(5.0, "Depth input image provided to upper-body detector has wrong encoding! 32FC1 is required (depth in meters), "
             "usually offered by the registered/rectified depth image. Maybe you are remapping the input topic incorrectly to the unregistered, "
             "raw image of type 16UC1 (depth in millimeters)?");
-        return;*/
-    
+        return;
+    }
 
-    	// Get depth image as matrix
-    	for (int r = 0;r < 480;r++){
-        	for (int c = 0;c < 640;c++) {
-            	matrix_depth(c, r) = img_depth_.at<float>(r,c)/1000.0;
-            }
+    // Get depth image as matrix
+    cv_depth_ptr = cv_bridge::toCvCopy(depth);
+    img_depth_ = cv_depth_ptr->image;
+    Matrix<double> matrix_depth(info->width, info->height);
+    for (int r = 0;r < 480;r++){
+        for (int c = 0;c < 640;c++) {
+            matrix_depth(c, r) = img_depth_.at<float>(r,c);
         }
     }
-    else if(depth->encoding == image_encodings::TYPE_16UC1)
-    {
-		//ROS_ERROR("TYPE_16UC1");
-    	for (int r = 0;r < 480;r++){
-        	for (int c = 0;c < 640;c++) {
-            	matrix_depth(c, r) = cv_frame32.at<unsigned short>(r,c)/1000.0;
-            	//ROS_INFO_STREAM("Publishing detections: " << matrix_depth(c, r));
-            	//ROS_ERROR_STREAM("Publishing : " <<img_depth_.at<unsigned short>(r,c)/1000);
-            	//ROS_WARN_STREAM("Publishing : " <<cv_frame32.at<unsigned short>(r,c));
-            }
-        }
-        
-    }
-    else 
-    {
-	ROS_ERROR("WRONG ENCODING OF THE DEPTH IMAGE");
-    }  
-
 
     // Generate base camera
     Matrix<double> R = Eye<double>(3);
@@ -317,7 +295,7 @@ void callback(const ImageConstPtr &depth, const GroundPlane::ConstPtr &gp, const
         }
     }
 
-    
+    // Publishing detections
     pub_message.publish(detection_msg);
     pub_centres.publish(bb_centres);
     pub_detected_persons.publish(detected_persons);
@@ -379,7 +357,7 @@ int main(int argc, char **argv)
     private_node_handle_.param("realsense_adaptor_ns", adaptor_ns, string("/converter/rgbd_front_top"));
     private_node_handle_.param("ground_plane", topic_gp, string("/ground_plane"));
 
-    topic_color_image = cam_ns + "/color/image_raw"; // "/color/image_rect_color";
+    topic_color_image = cam_ns + "/color/image_rect_color";
     string topic_depth_image = adaptor_ns + "/depth/image_rect";
     string topic_camera_info = cam_ns + "/depth/camera_info";
 

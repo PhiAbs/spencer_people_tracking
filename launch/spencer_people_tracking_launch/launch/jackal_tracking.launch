@@ -1,6 +1,6 @@
 <launch>
     <!-- Launch file arguments -->
-    <arg name="height_above_ground" default="1.6"/>  <!-- in meters, assumes a horizontally oriented RGB-D sensor; important for accurate detection -->
+    <arg name="height_above_ground" default="1.0"/>  <!-- in meters, assumes a horizontally oriented RGB-D sensor; important for accurate detection -->
     <arg name="dummy_transforms" default="true"/> <!-- publish TF transform for sensor to groundplane -->
     <arg name="use_upper_body_detector" default="true"/> <!-- use depth-template-based upper-body detector? -->
     <arg name="use_pcl_detector" default="false"/> <!-- use ROI-HOG detector from PCL library? cannot be used with upper-body detector at the same time! -->
@@ -11,8 +11,13 @@
 
 
     <!-- Camera -->
-    <!-- <include file="$(find semester_project)/launch/rs_d400_custom.launch">
-    </include> -->
+    <include file="$(find realsense_spencer)/launch/rs_d400_custom.launch">
+        <arg name="camera" value="/rgbd_front_top"/>
+        <arg name="tf_prefix" value="/rgbd_front_top"/>
+    </include>
+
+    <!-- Depth image converter -->
+    <node pkg="realsense_spencer" type="realsense_spencer_adaptor.py" name="realsense_spencer_adaptor"/>
 
     <!-- Set ground plane distance -->
     <rosparam param="/spencer/perception_internal/people_detection/ground_plane/distance" subst_value="true">$(arg height_above_ground)</rosparam>
@@ -38,7 +43,7 @@
     <!-- People tracking -->
     <include file="$(find spencer_people_tracking_launch)/launch/tracking/freiburg_people_tracking.launch">
         <arg name="rgbd" default="true"/>
-        <arg name="laser_low_confidence_detections" default="false"/>
+        <arg name="laser_low_confidence_detections" default="true"/>
     </include>
 
     <!-- Group tracking OFF -->

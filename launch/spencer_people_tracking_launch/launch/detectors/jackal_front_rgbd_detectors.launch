@@ -21,6 +21,7 @@
         <include file="$(find rwth_upper_body_detector)/launch/upper_body_detector.launch" ns="rgbd_front_top" if="$(arg upper_body)">
             <arg name="detected_persons" value="/spencer/perception_internal/detected_persons/rgbd_front_top/upper_body"/>
             <arg name="camera_namespace" value="/rgbd_front_top"/>
+            <arg name="realsense_adaptor_ns" value="/converter/rgbd_front_top" />
             <arg name="upper_body_detections" value="upper_body_detector/detections" />
             <arg name="upper_body_bb_centres" value="upper_body_detector/bounding_box_centres" />
             <arg name="upper_body_image" value="image" />
