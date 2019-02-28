@@ -28,7 +28,7 @@ def runAdaptor():
 
     pub = rospy.Publisher('converter/rgbd_front_top/depth/image_rect', Image, queue_size=10)
     callback = lambda imgMsg : pub.publish(convertImageEncoding(imgMsg, bridge))
-    sub = rospy.Subscriber('rgbd_front_top/depth/image_rect_raw', Image, callback)
+    sub = rospy.Subscriber('/spencer/sensors/rgbd_front_top/depth/image_rect_raw', Image, callback)
     rospy.spin()
 
 if __name__ == '__main__':
