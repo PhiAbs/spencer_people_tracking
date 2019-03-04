@@ -1,7 +1,7 @@
 <launch>
     <!-- Launch file arguments -->
     <arg name="height_above_ground" default="0.735"/>  <!-- 0.735m on ground, 1.49 on table in meters, assumes a horizontally oriented RGB-D sensor; important for accurate detection -->
-    <arg name="camera_x_offset" default="0.1"/>  <!-- 0.735m on ground, 1.49 on table in meters, assumes a horizontally oriented RGB-D sensor; important for accurate detection -->
+    <arg name="camera_x_offset" default="0"/>  <!-- TODO if this value is something else than 0, detection does no work!! -->
     <arg name="dummy_transforms" default="true"/> <!-- publish TF transform for sensor to groundplane -->
     <arg name="use_upper_body_detector" default="false"/> <!-- use depth-template-based upper-body detector? -->
     <arg name="use_pcl_detector" default="true"/> <!-- use ROI-HOG detector from PCL library? cannot be used with upper-body detector at the same time! -->
