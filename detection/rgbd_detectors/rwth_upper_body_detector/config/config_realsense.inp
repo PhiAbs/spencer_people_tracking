@@ -30,7 +30,7 @@ freespace_max_depth_to_cons = 7
 # Detector
 #====================================
 # parameters upper body detector
-evaluation_NMS_threshold_LM = 1 # lowering this parameter will reduce the number of false positives! Keep in mind this is distance!
+evaluation_NMS_threshold_LM = 0.5 # lowering this parameter will reduce the number of false positives! Keep in mind this is distance!
 evaluation_inc_height_ratio = 0.2  # parameter for increasing the size of ROI which is then scanned by the depth template
 
 # <<< these parameters are only relevant if you want to perform multi-scaling, evaluation_nr_scales > 1
