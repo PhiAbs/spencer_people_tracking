@@ -40,7 +40,7 @@
                 <arg name="detection_frame" value="pcl_people_detector_front_link"/>
                 <arg name="ground_coeffs" value="0 0 -1 0"/>
                 <arg name="detection_id_offset" value="11"/>
-                <arg name="detection_id_increment" value="$(arg detection_id_increment"/>
+                <arg name="detection_id_increment" value="$(arg detection_id_increment)"/>
             </include>
         </group>
 

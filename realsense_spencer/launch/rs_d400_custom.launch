@@ -73,7 +73,7 @@ Processing enabled by this node:
   <arg name="enable_gyro"         default="true"/>
   <arg name="enable_accel"        default="true"/>
 
-  <arg name="enable_pointcloud"   default="false"/>
+  <arg name="enable_pointcloud"   default="true"/>
   <arg name="enable_sync"         default="true"/>
   <arg name="align_depth"         default="true"/>
   <arg name="filters"             default=""/>
@@ -100,8 +100,8 @@ Processing enabled by this node:
   <arg name="ir_processing"                   default="false"/>
   <arg name="depth_processing"                default="true"/>
   <arg name="depth_registered_processing"     default="true"/>
-  <arg name="disparity_processing"            default="false"/>
-  <arg name="disparity_registered_processing" default="false"/>
+  <arg name="disparity_processing"            default="true"/>
+  <arg name="disparity_registered_processing" default="true"/>
   <arg name="hw_registered_processing"        default="$(arg align_depth)" />
   <arg name="sw_registered_processing"        default="true" unless="$(arg align_depth)" />
   <arg name="sw_registered_processing"        default="false" if="$(arg align_depth)" />

@@ -1,10 +1,12 @@
 <launch>
     <!-- Launch file arguments -->
     <arg name="height_above_ground" default="0.735"/>  <!-- 0.735m on ground, 1.49 on table in meters, assumes a horizontally oriented RGB-D sensor; important for accurate detection -->
+    <arg name="camera_x_offset" default="0.1"/>  <!-- 0.735m on ground, 1.49 on table in meters, assumes a horizontally oriented RGB-D sensor; important for accurate detection -->
     <arg name="dummy_transforms" default="true"/> <!-- publish TF transform for sensor to groundplane -->
     <arg name="use_upper_body_detector" default="false"/> <!-- use depth-template-based upper-body detector? -->
     <arg name="use_pcl_detector" default="true"/> <!-- use ROI-HOG detector from PCL library? cannot be used with upper-body detector at the same time! -->
     <arg name="use_hog_detector" default="false"/> <!-- use RGB groundHOG detector? Requires cudaHOG library-->
+    <arg name="use_laser_detector" default="false"/>  <!-- use laser detector?-->
 
     <arg name="visualization" default="true"/>
     <arg name="rviz_config_file" default="$(find spencer_people_tracking_launch)/rviz/tracking-rgbd-laser.rviz"/>
@@ -14,6 +16,7 @@
     <include file="$(find realsense_spencer)/launch/rs_d400_custom.launch">
         <arg name="camera" value="/spencer/sensors/rgbd_front_top"/>
         <arg name="tf_prefix" value="/rgbd_front_top"/>
+        <arg name="filters" value="disparity,temporal,spatial"/>
     </include>
 
     <!-- Depth image converter -->
@@ -24,21 +27,24 @@
 
     <!-- Set up dummy transforms into an imaginary robot and odom frame -->
     <group if="$(arg dummy_transforms)">
-        <node name="tf_base_footprint" pkg="tf" type="static_transform_publisher" args="0 0 $(arg height_above_ground) 0 0 0 base_footprint rgbd_front_top_link 10"/>
-        <node name="tf_odom"           pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 odom base_footprint 10"/>
-        <node name="tf_base_link"      pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 odom base_link 10"/>
+        <node name="tf_odom_base"      pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 odom base_link 10"/>
+        <node name="tf_base_link"      pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 base_link base_footprint 10"/>
+        <node name="tf_base_camera"      pkg="tf" type="static_transform_publisher" args="$(arg camera_x_offset) 0 $(arg height_above_ground) 0 0 0 base_footprint camera_link 10"/>
+        <node name="tf_camera" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 camera_link rgbd_front_top_link 10"/>
     </group>
 
 
     <!-- RGB-D detectors -->
-       <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_front_rgbd_detectors.launch">
+    <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_front_rgbd_detectors.launch">
         <arg name="upper_body" value="$(arg use_upper_body_detector)"/>
         <arg name="pcl_detector" value="$(arg use_pcl_detector)"/>
         <arg name="hog" value="$(arg use_hog_detector)"/>
     </include>
 
-    <!-- Laser detectors OFF -->
-    <!-- <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_laser_detectors.launch"/>  -->
+    <!-- Laser detectors -->
+    <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_laser_detectors.launch" if="$(arg use_laser_detector)">
+        <arg name="low_confidence_detections" value="false"/>
+    </include>
 
     <!-- People tracking -->
     <include file="$(find spencer_people_tracking_launch)/launch/tracking/freiburg_people_tracking.launch">
