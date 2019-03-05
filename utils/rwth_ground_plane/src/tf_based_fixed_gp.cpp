@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     // while using different parameters.
     ros::NodeHandle private_node_handle_("~");
     private_node_handle_.param("base_footprint", base_footprint, string("base_footprint"));
-    private_node_handle_.param("camera_frame", camera_frame, string("/camera/"));
+    private_node_handle_.param("camera_frame", camera_frame, string("rgbd_front_top_link"));
 
     // Create a topic publisher
     double publishRate;
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
         normalVectorStamped.vector.y = 0.0;
         normalVectorStamped.vector.z = 1.0;
 
-        distancePointStamped.header.frame_id = camera_frame;
+        distancePointStamped.header.frame_id = base_footprint;
         distancePointStamped.header.stamp = ros::Time();
         distancePointStamped.point.x = 0.0;
         distancePointStamped.point.y = 0.0;
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
             listener->waitForTransform(base_footprint, camera_frame, ros::Time(), ros::Duration(0.1));
             listener->transformVector(camera_frame, normalVectorStamped, normalVectorStampedCamera);
             listener->waitForTransform(camera_frame, base_footprint, ros::Time(), ros::Duration(0.1));
-            listener->transformPoint(base_footprint, distancePointStamped, distancePointStampedCamera);
+            listener->transformPoint(camera_frame, distancePointStamped, distancePointStampedCamera);
 
             _normal.setX(normalVectorStampedCamera.vector.x);
             _normal.setY(normalVectorStampedCamera.vector.y);
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
             gp.n.push_back(_normal.getX());
             gp.n.push_back(_normal.getY());
             gp.n.push_back(_normal.getZ());
-            gp.d = distancePointStampedCamera.point.z;//1.67;
+            gp.d = distancePointStampedCamera.point.z;
 
             gp.header.frame_id = camera_frame;
             gp.header.stamp = ros::Time::now();
