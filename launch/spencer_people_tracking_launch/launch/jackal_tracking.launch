@@ -1,9 +1,11 @@
 <launch>
     <!-- Launch file arguments -->
+
+    <arg name="use_laser_detector" default="true"/>  <!-- use laser detector?-->
+    
     <arg name="use_upper_body_detector" default="true"/> <!-- use depth-template-based upper-body detector? -->
     <arg name="use_pcl_detector" default="false"/> <!-- use ROI-HOG detector from PCL library? cannot be used with upper-body detector at the same time! -->
     <arg name="use_hog_detector" default="false"/> <!-- use RGB groundHOG detector? Requires cudaHOG library-->
-    <arg name="use_laser_detector" default="true"/>  <!-- use laser detector?-->
 
     <arg name="dummy_transforms" default="false"/> <!-- publish TF transform for sensor to groundplane -->
     <arg name="height_above_ground" default="0.8"/>  <!-- 0.735m on ground, 1.49 on table in meters, assumes a horizontally oriented RGB-D sensor; important for accurate detection -->
@@ -34,6 +36,10 @@
         <node name="tf_camera" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 camera_link rgbd_front_top_link 10"/>
     </group>
 
+    <!-- TODO: remove this dummy transform again!!! -->
+    <!-- <node name="tf_odom_map"      pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 odom /map 10"/> -->
+
+
 
     <!-- RGB-D detectors -->
     <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_front_rgbd_detectors.launch">
@@ -50,7 +56,7 @@
     <!-- People tracking -->
     <include file="$(find spencer_people_tracking_launch)/launch/tracking/freiburg_people_tracking.launch">
         <arg name="rgbd" default="true"/>
-        <arg name="laser_low_confidence_detections" default="true"/>
+        <arg name="laser_low_confidence_detections" default="false"/>
     </include>
 
     <!-- Group tracking OFF -->

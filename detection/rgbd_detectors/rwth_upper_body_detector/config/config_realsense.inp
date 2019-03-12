@@ -43,8 +43,8 @@ evaluation_greedy_NMS_threshold = 0.25
 # >>>
 
 # scanning corridor, which means for each ROI we scan it with the depth template starting from min_height (in meters) for up to max_height
-max_height = 2.5
-min_height = 0.5
+max_height = 2.1
+min_height = 1.0
 
 #======================
 # World scale
