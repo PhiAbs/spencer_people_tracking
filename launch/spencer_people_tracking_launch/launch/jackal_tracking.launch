@@ -3,14 +3,14 @@
 
     <arg name="use_realsense" default="false"/>
 
-    <arg name="use_laser_detector" default="false"/>  <!-- use laser detector?-->
+    <arg name="use_laser_detector" default="true"/>  <!-- use laser detector?-->
     
     <arg name="use_yolo_detector" default="true"/> <!-- use depth-template-based upper-body detector? -->
     <arg name="use_upper_body_detector" default="false"/> <!-- use depth-template-based upper-body detector? -->
     <arg name="use_pcl_detector" default="false"/> <!-- use ROI-HOG detector from PCL library? cannot be used with upper-body detector at the same time! -->
     <arg name="use_hog_detector" default="false"/> <!-- use RGB groundHOG detector? Requires cudaHOG library-->
 
-    <arg name="dummy_transforms" default="true"/> <!-- publish TF transform for sensor to groundplane -->
+    <arg name="dummy_transforms" default="false"/> <!-- publish TF transform for sensor to groundplane -->
     <arg name="height_above_ground" default="0.8"/>  <!-- 0.735m on ground, 1.49 on table in meters, assumes a horizontally oriented RGB-D sensor; important for accurate detection -->
     <arg name="camera_x_offset" default="0.1"/>  <!-- TODO if this value is something else than 0, detection does no work!! -->
 
