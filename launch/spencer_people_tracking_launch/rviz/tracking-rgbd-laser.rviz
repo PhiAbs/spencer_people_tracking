@@ -8,6 +8,7 @@ Panels:
         - /Raw detections1
         - /Raw detections1/Front1
         - /Raw detections1/Front1/Upper-Body Detection Image1
+        - /TrackedPersons Visually Confirmed1
         - /TrackedPersons Visually Confirmed1/Style1
         - /TrackedPersons Visually Confirmed1/Render covariances1
       Splitter Ratio: 0.456969708
@@ -300,7 +301,7 @@ Visualization Manager:
               Color: 255; 255; 0
               Color map offset: 0
               Color transform: Constant color
-              Enabled: false
+              Enabled: true
               Excluded person IDs: ""
               Font color: 255; 255; 255
               Font color style: Same color
@@ -323,7 +324,7 @@ Visualization Manager:
               Text spacing: 1
               Topic: /spencer/perception_internal/detected_persons/laser_front
               Unreliable: false
-              Value: false
+              Value: true
               Z offset:
                 Use Z position from message: false
                 Value: 0
@@ -400,7 +401,7 @@ Visualization Manager:
         Line width: 0.0299999993
         Scaling factor: 1.10000002
         Value: Person meshes
-      Topic: /spencer/perception/tracked_persons_confirmed_by_HOG_or_upper_body
+      Topic: /spencer/perception/tracked_persons_confirmed_by_HOG_or_upper_body_or_moving
       Unreliable: false
       Value: true
       Z offset:
@@ -587,18 +588,18 @@ Visualization Manager:
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.80909967
-        Y: -0.975291133
-        Z: 1.85937476
+        X: 0.645994961
+        Y: -1.15880752
+        Z: 0.616025269
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 1.43979788
+      Pitch: 0.564798236
       Target Frame: base_footprint
       Value: Orbit (rviz)
-      Yaw: 1.5154357
+      Yaw: 2.37544084
     Saved:
       - Class: rviz/Orbit
         Distance: 15.4204998

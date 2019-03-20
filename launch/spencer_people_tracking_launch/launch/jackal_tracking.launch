@@ -1,11 +1,9 @@
 <launch>
     <!-- Launch file arguments -->
 
-    <arg name="use_realsense" default="false"/>
-
     <arg name="use_laser_detector" default="true"/>  <!-- use laser detector?-->
-    
     <arg name="use_yolo_detector" default="true"/> <!-- use depth-template-based upper-body detector? -->
+    
     <arg name="use_upper_body_detector" default="false"/> <!-- use depth-template-based upper-body detector? -->
     <arg name="use_pcl_detector" default="false"/> <!-- use ROI-HOG detector from PCL library? cannot be used with upper-body detector at the same time! -->
     <arg name="use_hog_detector" default="false"/> <!-- use RGB groundHOG detector? Requires cudaHOG library-->
@@ -17,17 +15,6 @@
     <arg name="visualization" default="true"/>
     <arg name="rviz_config_file" default="$(find spencer_people_tracking_launch)/rviz/tracking-rgbd-laser.rviz"/>
 
-
-    <!-- Camera -->
-    <include file="$(find realsense_spencer)/launch/rs_d400_custom.launch" if="$(arg use_realsense)">
-        <arg name="camera" value="/spencer/sensors/rgbd_front_top"/>
-        <arg name="tf_prefix" value="/rgbd_front_top"/>
-        <arg name="filters" value="disparity,temporal,spatial"/>
-    </include>
-
-    <!-- Depth image converter -->
-    <node pkg="realsense_spencer" type="realsense_spencer_adaptor.py" name="realsense_spencer_adaptor" if="$(arg use_realsense)"/>
-
     <!-- Set ground plane distance -->
     <rosparam param="/spencer/perception_internal/people_detection/ground_plane/distance" subst_value="true">$(arg height_above_ground)</rosparam>
 
@@ -38,10 +25,6 @@
         <node name="tf_base_camera"      pkg="tf" type="static_transform_publisher" args="$(arg camera_x_offset) 0 $(arg height_above_ground) -1.570796 0 -1.570796 base_footprint camera_link 10"/>
         <node name="tf_camera" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 camera_link rgbd_front_top_link 10"/>
     </group>
-
-    <!-- TODO: remove this dummy transform again!!! -->
-    <!-- <node name="tf_odom_map"      pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 odom /map 10"/> -->
-
 
     <!-- RGB-D detectors -->
     <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_front_rgbd_detectors.launch">
