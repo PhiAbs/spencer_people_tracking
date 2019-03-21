@@ -15,23 +15,23 @@ void personCallback(const spencer_tracking_msgs::DetectedPersons::ConstPtr& msg)
 
 void addAdditionalInformation()
 {
-    int num_detections = detected_persons.detections.size();
+  int num_detections = detected_persons.detections.size();
 
-    if(num_detections > 0)
+  if(num_detections > 0)
+  {
+    for(int i = 0; i < num_detections; i++)
     {
-      for(int i = 0; i < num_detections; i++)
-      {
-          detected_persons.detections[i].pose.covariance[0*6 + 0] = pose_variance;
-          detected_persons.detections[i].pose.covariance[1*6 + 1] = pose_variance;
-          detected_persons.detections[i].pose.covariance[2*6 + 2] = pose_variance;
-          detected_persons.detections[i].pose.covariance[3*6 + 3] = LARGE_VARIANCE;
-          detected_persons.detections[i].pose.covariance[4*6 + 4] = LARGE_VARIANCE;
-          detected_persons.detections[i].pose.covariance[5*6 + 5] = LARGE_VARIANCE;
+        detected_persons.detections[i].pose.covariance[0*6 + 0] = pose_variance;
+        detected_persons.detections[i].pose.covariance[1*6 + 1] = pose_variance;
+        detected_persons.detections[i].pose.covariance[2*6 + 2] = pose_variance;
+        detected_persons.detections[i].pose.covariance[3*6 + 3] = LARGE_VARIANCE;
+        detected_persons.detections[i].pose.covariance[4*6 + 4] = LARGE_VARIANCE;
+        detected_persons.detections[i].pose.covariance[5*6 + 5] = LARGE_VARIANCE;
 
-          detected_persons.detections[i].detection_id = current_detection_id;
-          current_detection_id += detection_id_increment;
-      }
+        detected_persons.detections[i].detection_id = current_detection_id;
+        current_detection_id += detection_id_increment;
     }
+  }
 }
 
 int main(int argc, char **argv)
@@ -48,12 +48,12 @@ int main(int argc, char **argv)
   n.param("detection_id_increment", detection_id_increment, 1);
   n.param("detection_id_offset",    detection_id_offset, 0);
 
-    current_detection_id = detection_id_offset;
+  current_detection_id = detection_id_offset;
 
   ros::Subscriber sub = n.subscribe(sub_topic, 10, personCallback);
   ros::Publisher pub = n.advertise<spencer_tracking_msgs::DetectedPersons>(pub_topic, 10);
 
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(40);
   
   while (ros::ok())
   {
