@@ -2,9 +2,11 @@
     <!-- Launch file arguments -->
 
     <arg name="use_laser_detector" default="true"/>  <!-- use laser detector?-->
-    <arg name="use_yolo_detector" default="true"/> <!-- use depth-template-based upper-body detector? -->
+    <arg name="use_yolo_detector" default="false"/> <!-- use depth-template-based upper-body detector? -->
     
-    <arg name="use_upper_body_detector" default="false"/> <!-- use depth-template-based upper-body detector? -->
+    <arg name="use_realsense" default="true"/>
+
+    <arg name="use_upper_body_detector" default="true"/> <!-- use depth-template-based upper-body detector? -->
     <arg name="use_pcl_detector" default="false"/> <!-- use ROI-HOG detector from PCL library? cannot be used with upper-body detector at the same time! -->
     <arg name="use_hog_detector" default="false"/> <!-- use RGB groundHOG detector? Requires cudaHOG library-->
 
@@ -14,6 +16,17 @@
 
     <arg name="visualization" default="true"/>
     <arg name="rviz_config_file" default="$(find spencer_people_tracking_launch)/rviz/tracking-rgbd-laser.rviz"/>
+
+    <!-- Camera -->
+    <include file="$(find realsense_spencer)/launch/rs_d400_custom.launch" if="$(arg use_realsense)">
+        <arg name="camera" value="/spencer/sensors/rgbd_front_top"/>
+        <arg name="tf_prefix" value="/rgbd_front_top"/>
+        <arg name="filters" value="disparity,temporal,spatial"/>
+    </include>
+
+    <!-- Depth image converter -->
+    <!-- <node pkg="realsense_spencer" type="realsense_spencer_adaptor.py" name="realsense_spencer_adaptor" if="$(arg use_realsense)"/> -->
+
 
     <!-- Set ground plane distance -->
     <rosparam param="/spencer/perception_internal/people_detection/ground_plane/distance" subst_value="true">$(arg height_above_ground)</rosparam>
@@ -40,9 +53,15 @@
     </include>
 
     <!-- People tracking -->
-    <include file="$(find spencer_people_tracking_launch)/launch/tracking/freiburg_people_tracking.launch">
+    <include file="$(find spencer_people_tracking_launch)/launch/tracking/jackal_freiburg_people_tracking.launch">
         <arg name="rgbd" default="true"/>
         <arg name="laser_low_confidence_detections" default="false"/>
+        <arg name="subscriber_queue_size" default="1"/>
+        <arg name="fuse_detections" default="true"/>
+        <arg name="static_map_filter" default="true"/>
+        <arg name="tracker" default="true"/>
+        <arg name="occlusion_geodesics" default="false"/>
+    
     </include>
 
     <!-- Group tracking OFF -->

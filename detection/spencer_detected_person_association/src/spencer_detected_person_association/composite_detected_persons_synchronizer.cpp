@@ -167,10 +167,14 @@ namespace spencer_detected_person_association
             break;
         }
         case 1: {
+            ROS_WARN("One Topic");
+            // ROS_WARN(activeTopics[1]);
             m_currentCallback = activeTopics[0]->registerCallback(&CompositeDetectedPersonsSynchronizer::onSingleInputMessageReceived, this);
             break;
         }
         case 2: {
+            ROS_WARN("Two topics");
+            // ROS_WARN(activeTopics[0]);
             SyncPolicyWithTwoInputs syncPolicyWithTwoInputs(m_queueSize);
             syncPolicyWithTwoInputs.setAgePenalty(m_agePenalty);
             const SyncPolicyWithTwoInputs constSyncPolicyWithTwoInputs = syncPolicyWithTwoInputs;
@@ -205,6 +209,7 @@ namespace spencer_detected_person_association
 
     void CompositeDetectedPersonsSynchronizer::onTwoInputMessagesReceived(spencer_tracking_msgs::CompositeDetectedPersons::ConstPtr msg1, spencer_tracking_msgs::CompositeDetectedPersons::ConstPtr msg2)
     {
+        ROS_WARN("Received two messages");
         std::vector<spencer_tracking_msgs::CompositeDetectedPersons::ConstPtr> msgs;
         msgs.push_back(msg1);
         msgs.push_back(msg2);

@@ -30,6 +30,10 @@ void addAdditionalInformation()
 
         detected_persons.detections[i].detection_id = current_detection_id;
         current_detection_id += detection_id_increment;
+
+        // set z coordinate to zero since detections get projected onto ground plane. 
+        //CAREFUL this assumes that camera is mounted horizontally!!
+        detected_persons.detections[i].pose.pose.position.y = 0;
     }
   }
 }
@@ -50,8 +54,8 @@ int main(int argc, char **argv)
 
   current_detection_id = detection_id_offset;
 
-  ros::Subscriber sub = n.subscribe(sub_topic, 10, personCallback);
-  ros::Publisher pub = n.advertise<spencer_tracking_msgs::DetectedPersons>(pub_topic, 10);
+  ros::Subscriber sub = n.subscribe(sub_topic, 2, personCallback);
+  ros::Publisher pub = n.advertise<spencer_tracking_msgs::DetectedPersons>(pub_topic, 2);
 
   ros::Rate loop_rate(40);
   

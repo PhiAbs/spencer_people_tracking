@@ -1,6 +1,6 @@
 <launch>
     <!-- Launch file arguments -->
-    <arg name="rgbd" default="false"/>
+    <arg name="rgbd" default="true"/>
 
     <!-- Aggregate detections from all detectors -->
     <include file="$(find spencer_detected_person_association)/launch/aggregate_all.launch">
