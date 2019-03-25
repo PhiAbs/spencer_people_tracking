@@ -42,6 +42,7 @@ namespace spencer_detected_person_association
     void NearestNeighborFuserNodelet::onInit()
     {
         NODELET_INFO("Initializing NearestNeighborFuserNodelet...");
+        ROS_WARN("Initialiye nearest neighbor fusion");
         initSynchronizer(getName(), getNodeHandle(), getPrivateNodeHandle(), 1, 2); // we require at most two input topics
         m_seq = 0;
 
@@ -58,20 +59,25 @@ namespace spencer_detected_person_association
         outputMsg->header.stamp = inputMsgs[0]->header.stamp;
         outputMsg->header.seq = m_seq++;
 
+        ROS_WARN("Ready to compute nn distances");
+
         // Get first set of composite detections to fuse
         const spencer_tracking_msgs::CompositeDetectedPersons::ConstPtr& firstSet = inputMsgs[0];
 
         // Check if both sets of CompositeDetectedPersons contain elements
         if(inputMsgs.size() == 1 || inputMsgs[1]->elements.empty()) {
+            ROS_WARN("Only one topic received, but should publish something anyway");
             // We are only subscribed to 1 topic or the second set is empty, so just fast-forward all elements
             outputMsg->elements.insert(outputMsg->elements.end(), firstSet->elements.begin(), firstSet->elements.end());
         }
         else if(firstSet->elements.empty()) {
+            ROS_WARN("Only one topic received second one), but should publish something anyway");
             // Only the second set contains elements
             const spencer_tracking_msgs::CompositeDetectedPersons::ConstPtr& secondSet = inputMsgs[1];
             outputMsg->elements.insert(outputMsg->elements.end(), secondSet->elements.begin(), secondSet->elements.end());
         }
         else {
+            ROS_WARN("Received two topics, compute distances");
             // Both sets contain elements, need to fuse the detections: This is where it get's interesting...
 
             // Use timestamp of latest message

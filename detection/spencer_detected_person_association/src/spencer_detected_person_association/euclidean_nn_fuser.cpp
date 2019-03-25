@@ -42,9 +42,11 @@ namespace spencer_detected_person_association
     {
         // Compute the Euclidean distance in X and Y
         float distance = hypot(d1.pose.pose.position.x - d2.pose.pose.position.x, d1.pose.pose.position.y - d2.pose.pose.position.y);
+        std::cout << "distance between detections in x and y direction " << distance << std::endl;
 
         // Gating: If it fails, set distance to infinity
         double gatingDistance = 0.5; getPrivateNodeHandle().getParamCached("gating_distance", gatingDistance);
+        std::cout << "gating distance " << gatingDistance <<  std::endl;
         if(distance > gatingDistance) distance = std::numeric_limits<float>::infinity();
 
         return distance;

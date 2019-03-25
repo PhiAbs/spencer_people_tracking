@@ -100,6 +100,7 @@ namespace spencer_detected_person_association
 
     void ConvertToCompositeDetectionsNodelet::onNewInputMessageReceived(const spencer_tracking_msgs::DetectedPersons::ConstPtr& inputMsg)
     {
+        ROS_WARN("convert to common frame");
         spencer_tracking_msgs::CompositeDetectedPersons::Ptr outputMsg(new spencer_tracking_msgs::CompositeDetectedPersons);
 
         // Copy stamp, frame ID, seq
@@ -114,12 +115,12 @@ namespace spencer_detected_person_association
 
             try {
               tf::StampedTransform transform;
-              m_transformListener->waitForTransform(m_commonFrameId, inputMsg->header.frame_id, inputMsg->header.stamp, ros::Duration(0.1));
+              m_transformListener->waitForTransform(m_commonFrameId, inputMsg->header.frame_id, inputMsg->header.stamp, ros::Duration(10));
               m_transformListener->lookupTransform( m_commonFrameId, inputMsg->header.frame_id, inputMsg->header.stamp, transform);
               tf::transformTFToEigen(transform, eigenTransform);
             }
             catch (tf::TransformException ex){
-              ROS_WARN_STREAM_THROTTLE(5.0, "Failed to lookup transform from frame " << inputMsg->header.frame_id << " into target frame " << m_commonFrameId << "! Dropping input DetectedPersons message on topic "
+              ROS_WARN_STREAM_THROTTLE(11.0, "Failed to lookup transform from frame " << inputMsg->header.frame_id << " into target frame " << m_commonFrameId << "! Dropping input DetectedPersons message on topic "
                 << getNodeHandle().resolveName(m_subscriber->getTopic()) << ". Reason: " << ex.what());
               return;
             }

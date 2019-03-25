@@ -167,10 +167,14 @@ namespace spencer_detected_person_association
             break;
         }
         case 1: {
+            std::cout << "Active topic" << activeTopics[0] << std::endl;
             m_currentCallback = activeTopics[0]->registerCallback(&CompositeDetectedPersonsSynchronizer::onSingleInputMessageReceived, this);
             break;
         }
         case 2: {
+            ROS_WARN("Two input topics. start synchronizing");
+            std::cout << "Active topics" << activeTopics[0] << std::endl;
+            std::cout << "Active topics" << activeTopics[1] << std::endl;
             SyncPolicyWithTwoInputs syncPolicyWithTwoInputs(m_queueSize);
             syncPolicyWithTwoInputs.setAgePenalty(m_agePenalty);
             const SyncPolicyWithTwoInputs constSyncPolicyWithTwoInputs = syncPolicyWithTwoInputs;
@@ -190,6 +194,8 @@ namespace spencer_detected_person_association
         // Make sure that the publisher does not get destroyed while following method is using it
         boost::mutex::scoped_lock lock(m_monitorMutex);
 
+        std::cout << "inputMsgs frame id " << inputMsgs[0]->header.frame_id << std::endl;
+
         // Invoke method implemented by derived class.
         onNewInputMessagesReceived(inputMsgs);
     }
@@ -199,6 +205,7 @@ namespace spencer_detected_person_association
     {
         std::vector<spencer_tracking_msgs::CompositeDetectedPersons::ConstPtr> msgs;
         msgs.push_back(msg);
+        ROS_WARN("Received one message");
         handleNewInputMessages(msgs);
     }
 
@@ -208,6 +215,7 @@ namespace spencer_detected_person_association
         std::vector<spencer_tracking_msgs::CompositeDetectedPersons::ConstPtr> msgs;
         msgs.push_back(msg1);
         msgs.push_back(msg2);
+        ROS_WARN("Received two messages");
         handleNewInputMessages(msgs);
     }
 
