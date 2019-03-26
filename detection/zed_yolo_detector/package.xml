@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>zed_yolo_detector</name>
-  <version>1.0.8</version>
+  <version>1.0.1</version>
   <description>The zed_yolo_detector package</description>
   
   <!-- SPENCER integration: -->
@@ -11,9 +11,7 @@
 
   <url type="website">http://www.vision.rwth-aachen.de/</url>
 
-  <!-- ROS wrapper and original implementation: -->
-  <author email="cdondrup@lincoln.ac.uk">Christian Dondrup</author>
-  <author email="mitzel@umic.rwth-aachen.de">Dennis Mitzel</author>
+  <author email="ph.andermatt@gmail.com">Philipp Andermatt</author>
   
   <buildtool_depend>catkin</buildtool_depend>
 

@@ -43,7 +43,7 @@ int main(int argc, char **argv)
   std::string pub_topic;
   std::string sub_topic;
   n.param("pose_variance", pose_variance, 0.05);
-  n.param("detected_persons", pub_topic, std::string("/spencer/perception_internal/detected_persons/rgbd_front_top/upper_body"));
+  n.param("detected_persons", pub_topic, std::string("/spencer/perception_internal/detected_persons/rgbd_front_top/yolo"));
   n.param("person_listener", sub_topic, std::string("/zed_yolo_detected_persons"));
   n.param("detection_id_increment", detection_id_increment, 1);
   n.param("detection_id_offset",    detection_id_offset, 0);

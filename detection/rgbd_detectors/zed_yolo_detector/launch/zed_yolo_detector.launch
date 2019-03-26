@@ -1,6 +1,0 @@
-<launch>
-    <node pkg="zed_yolo_detector" type="zed_yolo_detector" name="zed_yolo_detector" output="screen">
-        <param name="detected_persons" value="/spencer/perception_internal/detected_persons/rgbd_front_top/upper_body" type="string"/>
-        <param name="person_listener" value="/zed_yolo_detected_persons" type="string"/>
-    </node>
-</launch> 
