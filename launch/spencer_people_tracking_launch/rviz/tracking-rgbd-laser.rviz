@@ -7,7 +7,7 @@ Panels:
         - /Global Options1
         - /Raw detections1
         - /Raw detections1/Front1
-        - /Raw detections1/Front1/Upper-Body Detection Image1
+        - /Fused detections1
         - /TrackedPersons Visually Confirmed1
         - /TrackedPersons Visually Confirmed1/Style1
         - /TrackedPersons Visually Confirmed1/Render covariances1
@@ -301,7 +301,7 @@ Visualization Manager:
               Color: 255; 255; 0
               Color map offset: 0
               Color transform: Constant color
-              Enabled: true
+              Enabled: false
               Excluded person IDs: ""
               Font color: 255; 255; 255
               Font color style: Same color
@@ -324,7 +324,7 @@ Visualization Manager:
               Text spacing: 1
               Topic: /spencer/perception_internal/detected_persons/laser_front
               Unreliable: false
-              Value: true
+              Value: false
               Z offset:
                 Use Z position from message: false
                 Value: 0
@@ -337,7 +337,7 @@ Visualization Manager:
       Color: 0; 170; 0
       Color map offset: 0
       Color transform: Constant color
-      Enabled: true
+      Enabled: false
       Excluded person IDs: ""
       Font color: 90; 90; 90
       Font color style: Same color
@@ -360,7 +360,7 @@ Visualization Manager:
       Text spacing: 0.699999988
       Topic: /spencer/perception_internal/detected_person_association/lasers_upper_body_fused
       Unreliable: false
-      Value: true
+      Value: false
       Z offset:
         Use Z position from message: false
         Value: 0
@@ -581,25 +581,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 13.911231
+      Distance: 12.5002174
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.645994961
-        Y: -1.15880752
-        Z: 0.616025269
+        X: 2.6515336
+        Y: -0.612109125
+        Z: 1.83935964
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.564798236
+      Pitch: 0.634797156
       Target Frame: base_footprint
       Value: Orbit (rviz)
-      Yaw: 2.37544084
+      Yaw: 4.04046059
     Saved:
       - Class: rviz/Orbit
         Distance: 15.4204998
