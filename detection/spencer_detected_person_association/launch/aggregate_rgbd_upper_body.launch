@@ -16,7 +16,7 @@
             <param name="common_frame_id" value="$(arg common_frame_id)"/>
         </node> 
 
-        <!-- Aggregate front and rear lasers -->
+        <!-- Aggregate front and rear cameras -->
         <node name="aggregate_rgbd_upper_body" pkg="nodelet" type="nodelet" args="load spencer_detected_person_association/AggregateDetectionsNodelet detected_person_association_nodelet_manager" output="screen">
             <rosparam param="input_topics">
                 - composite/rgbd_upper_body_front

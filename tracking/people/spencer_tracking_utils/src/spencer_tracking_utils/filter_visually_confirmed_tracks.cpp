@@ -44,6 +44,8 @@ using namespace spencer_tracking_msgs;
 
 ros::Publisher g_filteredTracksPublisher;
 
+float track_timeout;
+
 typedef std::map<std::string, int> MatchesPerModalityMap;
 typedef uint64_t track_id;
 
@@ -117,7 +119,7 @@ void newTrackedPersonsAndCompositesReceived(const TrackedPersons::ConstPtr& trac
 
     // Delete tracks which don't exist any more
     for(std::map<track_id, ros::Time>::const_iterator trackIt = g_trackLastSeenAt.begin(); trackIt != g_trackLastSeenAt.end(); trackIt++) {
-        if(currentTime - trackIt->second > ros::Duration(5.0) || currentTime < trackIt->second) {
+        if(currentTime - trackIt->second > ros::Duration(track_timeout) || currentTime < trackIt->second) {
             track_id trackId = trackIt->first;
             g_trackLastSeenAt.erase(trackId);
             g_actualMatchesPerTrackAndModality.erase(trackId);
@@ -138,6 +140,8 @@ int main(int argc, char **argv)
 
     privateHandle.getParam("min_matches_per_modality", g_minMatchesPerModality);
     ROS_ASSERT(!g_minMatchesPerModality.empty());
+
+    track_timeout = 5.0;  privateHandle.getParam("track_timeout", track_timeout);
 
     std::string inputTopic = "input_tracks";
     std::string outputTopic = "output_tracks";

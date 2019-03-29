@@ -42,6 +42,8 @@
     <!-- People tracking -->
     <include file="$(find spencer_people_tracking_launch)/launch/tracking/freiburg_people_tracking.launch">
         <arg name="rgbd" default="true"/>
+        <arg name="yolo" value="$(arg use_yolo_detector)"/>
+        <arg name="upper_body" value="true" if="$(eval use_upper_body_detector or use_pcl_detector)"/>
         <arg name="laser_low_confidence_detections" default="false"/>
     </include>
 

@@ -18,6 +18,7 @@
     
     <!-- Aggregate RGB-D detections (optional) -->
     <group if="$(arg rgbd)">
+        <include file="$(find spencer_detected_person_association)/launch/aggregate_rgbd_yolo.launch"/>
         <include file="$(find spencer_detected_person_association)/launch/aggregate_rgbd_upper_body.launch"/>
         <include file="$(find spencer_detected_person_association)/launch/aggregate_rgbd_ground_hog.launch"/>
     </group>

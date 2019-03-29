@@ -6,6 +6,7 @@
     <arg name="fuse_detections" default="true"/>
     <arg name="static_map_filter" default="true"/>
     <arg name="rgbd" default="false"/>
+    <arg name="yolo" default="false"/>
     <arg name="laser_low_confidence_detections" default="true"/>
     
     <arg name="tracker" default="true"/>
@@ -24,6 +25,7 @@
         <include file="$(find spencer_detected_person_association)/launch/detection_to_detection_fusion_pipeline.launch">
             <!-- Also fuse RGB-D detectors, or just use high-recall and high-precision lasers? -->
             <arg name="rgbd" value="$(arg rgbd)"/>
+            <arg name="yolo" value="$(arg yolo)"/>
         </include>
     </group>
 
@@ -40,7 +42,10 @@
         <node name="filter_low_confidence_detections_by_static_map" pkg="spencer_tracking_utils" type="filter_detections_by_static_map" output="screen">
             <remap from="input_detections" to="/spencer/perception_internal/detected_person_association/lasers_high_recall_aggregated_unfiltered"/>
             <remap from="output_detections" to="/spencer/perception_internal/detected_person_association/lasers_high_recall_aggregated"/>
-            <rosparam param="modalities_to_always_passthrough">[rgbd]</rosparam>  <!-- only filter out laser and monocular vision, as RGB-D does not have many false positives -->
+            <rosparam param="modalities_to_always_passthrough">
+            - rgbd
+            - yolo
+            </rosparam>  <!-- only filter out laser and monocular vision, as RGB-D and yolo does not have many false positives -->
         </node>
     </group>
 

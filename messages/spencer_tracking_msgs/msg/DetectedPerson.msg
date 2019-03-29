@@ -21,3 +21,4 @@ string          MODALITY_GENERIC_LASER_3D = laser3d
 string          MODALITY_GENERIC_MONOCULAR_VISION = mono
 string          MODALITY_GENERIC_STEREO_VISION = stereo
 string          MODALITY_GENERIC_RGBD = rgbd
+string          MODALITY_GENERIC_YOLO = yolo
