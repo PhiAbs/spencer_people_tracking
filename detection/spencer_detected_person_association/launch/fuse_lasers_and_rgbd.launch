@@ -47,8 +47,8 @@
             <param name="detection_id_increment"    value="20"/>
             <param name="detection_id_offset"       value="11"/>
             <param name="gating_distance"           value="0.8"/>
-            <param name="pose_weight_for_laser"     value="0.9"/>   <!-- the two pose weights have to sum up to 1 -->
-            <param name="pose_weight_for_rgb"       value="0.1"/>
+            <param name="pose_weight_for_laser"     value="1.0"/>   <!-- the two pose weights have to sum up to 1 -->
+            <param name="pose_weight_for_rgb"       value="0"/>
             <rosparam param="input_topics">
                 - composite/lasers_aggregated
                 - composite/rgbd_yolo_aggregated

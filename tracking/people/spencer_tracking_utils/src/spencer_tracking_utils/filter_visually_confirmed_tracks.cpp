@@ -28,6 +28,8 @@
 *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include "math.h"
+
 #include <ros/ros.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
@@ -45,6 +47,7 @@ using namespace spencer_tracking_msgs;
 ros::Publisher g_filteredTracksPublisher;
 
 float track_timeout;
+float visual_confirmation_timeout;
 
 typedef std::map<std::string, int> MatchesPerModalityMap;
 typedef uint64_t track_id;
@@ -52,6 +55,7 @@ typedef uint64_t track_id;
 MatchesPerModalityMap g_minMatchesPerModality;
 std::map<track_id, MatchesPerModalityMap > g_actualMatchesPerTrackAndModality;
 std::map<track_id, ros::Time> g_trackLastSeenAt;
+// std::map<track_id, ros::Time> g_trackLastVisualConfirmation;
 std::set<track_id> g_confirmedTracks;
 
 /// Filters out any tracks which have not been confirmed visually, by also subscribing to a CompositeDetectedPersons topic
@@ -108,14 +112,39 @@ void newTrackedPersonsAndCompositesReceived(const TrackedPersons::ConstPtr& trac
                     filteredTracks->tracks.push_back(trackedPerson);
                 }
             }
+            g_trackLastSeenAt[trackId] = currentTime;
         }
         else {
-            filteredTracks->tracks.push_back(trackedPerson);
+            // check if track is still visually confirmed. If it has not been confirmed for a certain period of time, do not use it anymore
+            MatchesPerModalityMap& actualMatchesPerModality = g_actualMatchesPerTrackAndModality[trackId];
+            std::map<track_id, const CompositeDetectedPerson*>::const_iterator compositeIt = compositeLookup.find(trackedPerson.detection_id);
+            // check if person is still in the composite detection message
+            if(compositeIt != compositeLookup.end()) {
+                const CompositeDetectedPerson* associatedComposite = compositeIt->second;
+                // check modality: If visual modality is no longer available, stop time update. If person is not visually confirmed for some time period, delete track
+                foreach(const DetectedPerson& originalDetection, associatedComposite->original_detections) {
+                    // originalDetection.modality is either laser or yolo
+                    if(g_minMatchesPerModality.find(originalDetection.modality) != g_minMatchesPerModality.end()) {
+                        filteredTracks->tracks.push_back(trackedPerson);
+                        g_trackLastSeenAt[trackId] = currentTime;
+                        break;
+                    } 
+                    else if (g_minMatchesPerModality.find(originalDetection.modality) == g_minMatchesPerModality.end() && 
+                            fabs(double(g_trackLastSeenAt[trackId].toNSec()/ pow(10, 9) - currentTime.toNSec()/ pow(10, 9))) < visual_confirmation_timeout) {
+                        filteredTracks->tracks.push_back(trackedPerson);
+                        break;
+                    } 
+                    else{
+                        g_trackLastSeenAt.erase(trackId);
+                        g_actualMatchesPerTrackAndModality.erase(trackId);
+                        g_confirmedTracks.erase(trackId);
+                    }
+                }
+                
+            }
         }
-
-        // Mark track as still active
-        g_trackLastSeenAt[trackId] = currentTime;
     }
+
 
     // Delete tracks which don't exist any more
     for(std::map<track_id, ros::Time>::const_iterator trackIt = g_trackLastSeenAt.begin(); trackIt != g_trackLastSeenAt.end(); trackIt++) {
@@ -126,6 +155,7 @@ void newTrackedPersonsAndCompositesReceived(const TrackedPersons::ConstPtr& trac
             g_confirmedTracks.erase(trackId);
         }
     }
+
 
     // Publish filtered tracks
     g_filteredTracksPublisher.publish(filteredTracks);
@@ -142,6 +172,7 @@ int main(int argc, char **argv)
     ROS_ASSERT(!g_minMatchesPerModality.empty());
 
     track_timeout = 5.0;  privateHandle.getParam("track_timeout", track_timeout);
+    visual_confirmation_timeout = 2.0; privateHandle.getParam("visual_confirmation_timeout", visual_confirmation_timeout);
 
     std::string inputTopic = "input_tracks";
     std::string outputTopic = "output_tracks";
