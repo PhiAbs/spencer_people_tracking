@@ -90,6 +90,8 @@ Visualization Manager:
           Value: true
         imu_link:
           Value: true
+        map:
+          Value: true
         mid_mount:
           Value: true
         navsat_link:
@@ -110,39 +112,40 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        odom:
-          base_link:
-            base_footprint:
-              {}
-            chassis_link:
-              fenders_link:
+        map:
+          odom:
+            base_link:
+              base_footprint:
                 {}
-              front_left_wheel_link:
-                {}
-              front_right_wheel_link:
-                {}
-              imu_link:
-                {}
-              mid_mount:
-                VLP16_base_link:
-                  VLP16:
-                    {}
-                baseplate_link:
+              chassis_link:
+                fenders_link:
                   {}
-                camera_link:
-                  rgbd_front_top_link:
-                    {}
-                hokuyo_base_link:
-                  hokuyo_base_scan:
-                    {}
-                rear_mount:
+                front_left_wheel_link:
                   {}
-              navsat_link:
-                {}
-              rear_left_wheel_link:
-                {}
-              rear_right_wheel_link:
-                {}
+                front_right_wheel_link:
+                  {}
+                imu_link:
+                  {}
+                mid_mount:
+                  VLP16_base_link:
+                    VLP16:
+                      {}
+                  baseplate_link:
+                    {}
+                  camera_link:
+                    rgbd_front_top_link:
+                      {}
+                  hokuyo_base_link:
+                    hokuyo_base_scan:
+                      {}
+                  rear_mount:
+                    {}
+                navsat_link:
+                  {}
+                rear_left_wheel_link:
+                  {}
+                rear_right_wheel_link:
+                  {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -510,10 +513,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.96479702
+      Pitch: 0.499797285
       Target Frame: base_footprint
       Value: Orbit (rviz)
-      Yaw: 4.62046623
+      Yaw: 4.41546297
     Saved:
       - Class: rviz/Orbit
         Distance: 15.4204998

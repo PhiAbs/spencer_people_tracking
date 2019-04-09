@@ -46,7 +46,6 @@ using namespace spencer_tracking_msgs;
 
 ros::Publisher g_filteredTracksPublisher;
 
-float track_timeout;
 float visual_confirmation_timeout;
 
 typedef std::map<std::string, int> MatchesPerModalityMap;
@@ -121,34 +120,27 @@ void newTrackedPersonsAndCompositesReceived(const TrackedPersons::ConstPtr& trac
             // check if person is still in the composite detection message
             if(compositeIt != compositeLookup.end()) {
                 const CompositeDetectedPerson* associatedComposite = compositeIt->second;
-                // check modality: If visual modality is no longer available, stop time update. If person is not visually confirmed for some time period, delete track
                 foreach(const DetectedPerson& originalDetection, associatedComposite->original_detections) {
-                    // originalDetection.modality is either laser or yolo
+                    // check if track is visually confirmed
                     if(g_minMatchesPerModality.find(originalDetection.modality) != g_minMatchesPerModality.end()) {
                         filteredTracks->tracks.push_back(trackedPerson);
                         g_trackLastSeenAt[trackId] = currentTime;
                         break;
                     } 
-                    else if (g_minMatchesPerModality.find(originalDetection.modality) == g_minMatchesPerModality.end() && 
-                            fabs(double(g_trackLastSeenAt[trackId].toNSec()/ pow(10, 9) - currentTime.toNSec()/ pow(10, 9))) < visual_confirmation_timeout) {
+                    // publish visually no longer confirmed track, but do not update last timestamp, such that it gets deleted at some point
+                    else {
                         filteredTracks->tracks.push_back(trackedPerson);
                         break;
                     } 
-                    else{
-                        g_trackLastSeenAt.erase(trackId);
-                        g_actualMatchesPerTrackAndModality.erase(trackId);
-                        g_confirmedTracks.erase(trackId);
-                    }
-                }
-                
+                } 
             }
         }
     }
 
 
-    // Delete tracks which don't exist any more
+    // Delete tracks which are no longer visually confirmed
     for(std::map<track_id, ros::Time>::const_iterator trackIt = g_trackLastSeenAt.begin(); trackIt != g_trackLastSeenAt.end(); trackIt++) {
-        if(currentTime - trackIt->second > ros::Duration(track_timeout) || currentTime < trackIt->second) {
+        if(currentTime - trackIt->second > ros::Duration(visual_confirmation_timeout) || currentTime < trackIt->second) {
             track_id trackId = trackIt->first;
             g_trackLastSeenAt.erase(trackId);
             g_actualMatchesPerTrackAndModality.erase(trackId);
@@ -171,7 +163,6 @@ int main(int argc, char **argv)
     privateHandle.getParam("min_matches_per_modality", g_minMatchesPerModality);
     ROS_ASSERT(!g_minMatchesPerModality.empty());
 
-    track_timeout = 5.0;  privateHandle.getParam("track_timeout", track_timeout);
     visual_confirmation_timeout = 2.0; privateHandle.getParam("visual_confirmation_timeout", visual_confirmation_timeout);
 
     std::string inputTopic = "input_tracks";

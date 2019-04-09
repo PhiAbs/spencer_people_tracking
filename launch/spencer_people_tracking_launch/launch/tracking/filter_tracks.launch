@@ -21,7 +21,6 @@
 
         <!-- Filter tracks which have been confirmed by HOG -->
         <node name="filter_tracks_confirmed_by_HOG" pkg="spencer_tracking_utils" type="filter_visually_confirmed_tracks">
-            <param name="track_timeout" value="5.0"/>
             <param name="visual_confirmation_timeout" value="2.0"/>
             <rosparam param="min_matches_per_modality">
                 mono: 10
@@ -33,7 +32,6 @@
 
         <!-- Filter tracks which have been confirmed by the Yolo detector -->
         <node name="filter_tracks_confirmed_by_yolo" pkg="spencer_tracking_utils" type="filter_visually_confirmed_tracks" output="screen">
-            <param name="track_timeout" value="2.0"/>
             <param name="visual_confirmation_timeout" value="2.0"/>
             <rosparam param="min_matches_per_modality">
                 yolo: 2
@@ -45,7 +43,6 @@
 
         <!-- Filter tracks which have been confirmed by RGB-D (upper-body detector) -->
         <node name="filter_tracks_confirmed_by_upper_body" pkg="spencer_tracking_utils" type="filter_visually_confirmed_tracks">
-            <param name="track_timeout" value="5.0"/>
             <param name="visual_confirmation_timeout" value="2.0"/>
             <rosparam param="min_matches_per_modality">
                 rgbd: 5
