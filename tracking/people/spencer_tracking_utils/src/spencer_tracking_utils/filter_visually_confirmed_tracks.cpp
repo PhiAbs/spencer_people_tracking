@@ -47,6 +47,7 @@ using namespace spencer_tracking_msgs;
 ros::Publisher g_filteredTracksPublisher;
 
 float visual_confirmation_timeout;
+int visual_confirmation_counter;
 
 typedef std::map<std::string, int> MatchesPerModalityMap;
 typedef uint64_t track_id;
@@ -120,18 +121,21 @@ void newTrackedPersonsAndCompositesReceived(const TrackedPersons::ConstPtr& trac
             // check if person is still in the composite detection message
             if(compositeIt != compositeLookup.end()) {
                 const CompositeDetectedPerson* associatedComposite = compositeIt->second;
-                foreach(const DetectedPerson& originalDetection, associatedComposite->original_detections) {
-                    // check if track is visually confirmed
+                visual_confirmation_counter = 0;
+                // check if track is visually confirmed.
+                foreach(const DetectedPerson& originalDetection, associatedComposite->original_detections) { 
                     if(g_minMatchesPerModality.find(originalDetection.modality) != g_minMatchesPerModality.end()) {
-                        filteredTracks->tracks.push_back(trackedPerson);
-                        g_trackLastSeenAt[trackId] = currentTime;
+                        visual_confirmation_counter ++;
                         break;
                     } 
-                    // publish visually no longer confirmed track, but do not update last timestamp, such that it gets deleted at some point
-                    else {
-                        filteredTracks->tracks.push_back(trackedPerson);
-                        break;
-                    } 
+                } 
+                if(visual_confirmation_counter > 0){
+                    filteredTracks->tracks.push_back(trackedPerson);
+                    g_trackLastSeenAt[trackId] = currentTime;
+                }
+                // publish visually no longer confirmed track, but do not update last timestamp, such that it gets deleted at some point
+                else {
+                    filteredTracks->tracks.push_back(trackedPerson);
                 } 
             }
         }
