@@ -1,0 +1,7 @@
+<launch>
+    <arg name="yolo_confirmed_tracks_topic"  default="/spencer/perception/tracked_persons_confirmed_by_yolo"/>
+
+    <node pkg="trajectory_prediction" type="trajectory_prediction" name="trajectory_prediction" output="screen">
+        <param name="yolo_confirmed_tracks_topic"  value="$(arg yolo_confirmed_tracks_topic)"/>
+    </node>
+</launch> 

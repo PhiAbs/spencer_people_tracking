@@ -47,6 +47,12 @@
         <arg name="laser_low_confidence_detections" default="false"/>
     </include>
 
+
+    <!-- Trajectory prediction: publish required information -->
+    <include file="$(find trajectory_prediction)/launch/trajectory_prediction.launch">
+        <arg name="yolo_confirmed_tracks_topic" default="/spencer/perception/tracked_persons_confirmed_by_yolo" />
+    </include>
+
     <!-- Group tracking OFF -->
     <!-- <include file="$(find spencer_people_tracking_launch)/launch/tracking/group_tracking.launch"/> -->
 
