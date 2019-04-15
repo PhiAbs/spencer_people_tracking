@@ -2,18 +2,15 @@
 #include <spencer_tracking_msgs/DetectedPersons.h>
 #include <spencer_tracking_msgs/DetectedPerson.h>
 
-spencer_tracking_msgs::DetectedPersons detected_persons;
+std::string pub_topic;
+ros::Publisher pub;
+
 const double LARGE_VARIANCE = 999999999;
 double pose_variance;
 int detection_id_increment, detection_id_offset, current_detection_id; // added for multi-sensor use in SPENCER
 
-void personCallback(const spencer_tracking_msgs::DetectedPersons::ConstPtr& msg)
-{
-    detected_persons = *msg;
-}
 
-
-void addAdditionalInformation()
+void addAdditionalInformation(spencer_tracking_msgs::DetectedPersons detected_persons)
 {
   int num_detections = detected_persons.detections.size();
 
@@ -32,7 +29,17 @@ void addAdditionalInformation()
         current_detection_id += detection_id_increment;
     }
   }
+  
+  detected_persons.header.stamp = ros::Time::now();
+  pub.publish(detected_persons);
 }
+
+
+void personCallback(const spencer_tracking_msgs::DetectedPersons::ConstPtr& msg)
+{
+    addAdditionalInformation(*msg);
+}
+
 
 int main(int argc, char **argv)
 {
@@ -40,7 +47,6 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
 
   //   load params
-  std::string pub_topic;
   std::string sub_topic;
   n.param("pose_variance", pose_variance, 0.05);
   n.param("detected_persons", pub_topic, std::string("/spencer/perception_internal/detected_persons/rgbd_front_top/yolo"));
@@ -50,17 +56,13 @@ int main(int argc, char **argv)
 
   current_detection_id = detection_id_offset;
 
-  ros::Subscriber sub = n.subscribe(sub_topic, 10, personCallback);
-  ros::Publisher pub = n.advertise<spencer_tracking_msgs::DetectedPersons>(pub_topic, 10);
+  ros::Subscriber sub = n.subscribe(sub_topic, 1, personCallback);
+  pub = n.advertise<spencer_tracking_msgs::DetectedPersons>(pub_topic, 1);
 
-  ros::Rate loop_rate(40);
+  ros::Rate loop_rate(20);
   
   while (ros::ok())
   {
-    addAdditionalInformation();
-    detected_persons.header.stamp = ros::Time::now();
-    pub.publish(detected_persons);
-
     ros::spinOnce();
     loop_rate.sleep();
   }

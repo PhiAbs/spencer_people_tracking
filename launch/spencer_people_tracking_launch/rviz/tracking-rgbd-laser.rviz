@@ -7,6 +7,7 @@ Panels:
         - /Global Options1
         - /Raw detections1
         - /Raw detections1/Front1
+        - /TrackedPersons Visually Confirmed1
         - /TrackedPersons Visually Confirmed1/Style1
         - /TrackedPersons Visually Confirmed1/Render covariances1
       Splitter Ratio: 0.456969708
@@ -98,6 +99,8 @@ Visualization Manager:
           Value: true
         odom:
           Value: false
+        person_3:
+          Value: true
         rear_left_wheel_link:
           Value: true
         rear_mount:
@@ -146,6 +149,8 @@ Visualization Manager:
                   {}
                 rear_right_wheel_link:
                   {}
+            person_3:
+              {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -316,7 +321,7 @@ Visualization Manager:
       Occlusion alpha: 0.5
       Render covariances:
         Line width: 0.0299999993
-        Value: true
+        Value: false
       Render detection IDs: false
       Render history: true
       Render person visual: true
@@ -513,10 +518,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.629797459
+      Pitch: 0.969797075
       Target Frame: base_footprint
       Value: Orbit (rviz)
-      Yaw: 3.71045303
+      Yaw: 3.34045124
     Saved:
       - Class: rviz/Orbit
         Distance: 15.4204998

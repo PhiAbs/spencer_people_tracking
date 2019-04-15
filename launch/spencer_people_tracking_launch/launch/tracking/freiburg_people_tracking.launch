@@ -7,6 +7,7 @@
     <arg name="static_map_filter" default="true"/>
     <arg name="rgbd" default="false"/>
     <arg name="yolo" default="false"/>
+    <arg name="upper_body" default="false"/>
     <arg name="laser_low_confidence_detections" default="true"/>
     
     <arg name="tracker" default="true"/>
@@ -26,6 +27,7 @@
             <!-- Also fuse RGB-D detectors, or just use high-recall and high-precision lasers? -->
             <arg name="rgbd" value="$(arg rgbd)"/>
             <arg name="yolo" value="$(arg yolo)"/>
+            <arg name="upper_body" value="$(arg upper_body)"/>
         </include>
     </group>
 
