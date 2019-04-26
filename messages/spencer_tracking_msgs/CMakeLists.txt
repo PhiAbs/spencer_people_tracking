@@ -22,8 +22,6 @@ add_message_files(
    CompositeDetectedPersons.msg
    TrackedPerson.msg
    TrackedPersons.msg
-   TrajectoryPredictionLocalVelocity.msg
-   TrajectoryPredictionsLocalVelocities.msg
    TrackedPerson2d.msg
    TrackedPersons2d.msg
    TrackedGroup.msg
@@ -31,6 +29,10 @@ add_message_files(
    ImmDebugInfo.msg
    ImmDebugInfos.msg
    TrackingTimingMetrics.msg
+   TrajectoryPredictionLocalVelocity.msg
+   TrajectoryPredictionsLocalVelocities.msg
+   TrajectoryPredictionAPG.msg
+   TrajectoryPredictionAPGs.msg
 )
 
 # Generate services in the 'srv' folder
