@@ -34,6 +34,27 @@ double max_range;
 // store subscribed persons messages globally
 spencer_tracking_msgs::TrackedPersons tracked_persons;
 
+
+void setParamsForLocalMapExtraction(ros::NodeHandle& n)
+{
+  int idx = 0;
+  foreach(const spencer_tracking_msgs::TrackedPerson& tracked_person, tracked_persons.tracks)
+  {
+    std::ostringstream local_tf;
+    std::ostringstream full_parameter_global_frame;
+    std::ostringstream full_parameter_robot_base_frame;
+    // /person_0/costmap/global_frame
+    // /person_0/costmap/robot_base_frame
+    local_tf << local_tf_prefix << tracked_person.track_id;
+    full_parameter_global_frame << "/" << local_tf_prefix << idx << "/costmap/global_frame";
+    full_parameter_robot_base_frame << "/" << local_tf_prefix << idx << "/costmap/robot_base_frame";
+    n.setParam(full_parameter_global_frame.str(), local_tf.str());
+    n.setParam(full_parameter_robot_base_frame.str(), local_tf.str());
+    idx++;
+  }
+}
+
+
 spencer_tracking_msgs::TrajectoryPredictionLocalVelocity computeLocalVelocity(
     const spencer_tracking_msgs::TrackedPerson& tracked_person,
     std::string local_frame)
@@ -63,95 +84,90 @@ spencer_tracking_msgs::TrajectoryPredictionLocalVelocity computeLocalVelocity(
   return local_velocity;
 }
 
+
 // For every detected person, check how far away all the other persons are and find their location relative to the query person
 // Store this information in a polar coordinate system grid
 void angularPedestrianGrid(tf::TransformListener& tf_listener)
 {
   double sector_size = 2 * PI / num_sectors;
-  if(tracked_persons.tracks.size() > 0)
+
+  spencer_tracking_msgs::TrajectoryPredictionAPGs apgs;
+
+  for(int i = 0; i < tracked_persons.tracks.size(); i++)
   {
-    spencer_tracking_msgs::TrajectoryPredictionAPGs apgs;
+    spencer_tracking_msgs::TrajectoryPredictionAPG apg;
 
-    for(int i = 0; i < tracked_persons.tracks.size(); i++)
+    // fill header for each person's APG
+    std::ostringstream local_query_tf;
+    local_query_tf << local_tf_prefix << tracked_persons.tracks[i].track_id;
+    apg.header = tracked_persons.header;
+    apg.header.frame_id = local_query_tf.str();
+
+    // fill array with max_range
+    for(int idx = 0; idx < num_sectors; idx++)
     {
-      spencer_tracking_msgs::TrajectoryPredictionAPG apg;
+      apg.min_distances.push_back(max_range);
+    }
 
-      // fill header for each person's APG
-      std::ostringstream local_query_tf;
-      local_query_tf << local_tf_prefix << tracked_persons.tracks[i].track_id;
-      apg.header = tracked_persons.header;
-      apg.header.frame_id = local_query_tf.str();
+    // lookup transform between global and local person frame and compute rotation matrix
+    tf::StampedTransform tf_world_to_person;
+    tf_listener.waitForTransform(local_query_tf.str(), "odom", ros::Time(0), ros::Duration(0.5));
+    tf_listener.lookupTransform(local_query_tf.str(), "odom", ros::Time(0), tf_world_to_person);
+    tf::Matrix3x3 rotation_matrix_world_to_person(tf_world_to_person.getRotation());
 
-      // fill array with max_range
-      for(int idx = 0; idx < num_sectors; idx++)
+    // compute the distance between the query pedestrian and every other pedestrian
+    for(int j = 0; j < tracked_persons.tracks.size(); j++)
+    {
+      if(j != i)
       {
-        apg.min_distances.push_back(max_range);
-      }
-
-      // lookup transform between global and local person frame and compute rotation matrix
-      tf::StampedTransform tf_world_to_person;
-      tf_listener.waitForTransform(local_query_tf.str(), "odom", ros::Time(0), ros::Duration(0.5));
-      tf_listener.lookupTransform(local_query_tf.str(), "odom", ros::Time(0), tf_world_to_person);
-      tf::Matrix3x3 rotation_matrix_world_to_person(tf_world_to_person.getRotation());
-
-      // compute the distance between the query pedestrian and every other pedestrian
-      for(int j = 0; j < tracked_persons.tracks.size(); j++)
-      {
-        if(j != i)
+        double abs_distance = sqrt(pow(tracked_persons.tracks[i].pose.pose.position.x - tracked_persons.tracks[j].pose.pose.position.x, 2) + 
+          pow(tracked_persons.tracks[i].pose.pose.position.y - tracked_persons.tracks[j].pose.pose.position.y, 2));
+        
+        if(abs_distance < max_range)
         {
-          double abs_distance = sqrt(pow(tracked_persons.tracks[i].pose.pose.position.x - tracked_persons.tracks[j].pose.pose.position.x, 2) + 
-            pow(tracked_persons.tracks[i].pose.pose.position.y - tracked_persons.tracks[j].pose.pose.position.y, 2));
-          
-          if(abs_distance < max_range)
-          {
-            // change data type to tf::Vector3
-            tf::Vector3 global_position;
-            tf::pointMsgToTF(tracked_persons.tracks[i].pose.pose.position, global_position);
+          // change data type to tf::Vector3
+          tf::Vector3 global_position;
+          tf::pointMsgToTF(tracked_persons.tracks[i].pose.pose.position, global_position);
 
-            // Transform the global position of a pedestrian into the coordinate system of the query pedestrian
-            tf::Vector3 local_position = rotation_matrix_world_to_person * global_position;
+          // Transform the global position of a pedestrian into the coordinate system of the query pedestrian
+          tf::Vector3 local_position = rotation_matrix_world_to_person * global_position;
 
-            // find the person's angle relative to the local coordinate frame (polar coordinates)
-            double angle = atan2(local_position.getY(), local_position.getX());
-            int sector_nr = std::floor(angle / sector_size);
-            apg.min_distances[sector_nr] = abs_distance;
-          }
+          // find the person's angle relative to the local coordinate frame (polar coordinates)
+          double angle = atan2(local_position.getY(), local_position.getX());
+          int sector_nr = std::floor(angle / sector_size);
+          apg.min_distances[sector_nr] = abs_distance;
         }
       }
-      apgs.apg_array.push_back(apg);
     }
-    pub_apg.publish(apgs);
+    apgs.apg_array.push_back(apg);
   }
+  pub_apg.publish(apgs);
 }
 
 
 void pubTfAndLocalVelocityForTrackedPersons()
 {
-  if(tracked_persons.tracks.size() > 0)
+  spencer_tracking_msgs::TrajectoryPredictionsLocalVelocities local_velocities;    
+  static tf::TransformBroadcaster tf_broadcaster;
+
+  foreach(const spencer_tracking_msgs::TrackedPerson& tracked_person, tracked_persons.tracks)
   {
-    spencer_tracking_msgs::TrajectoryPredictionsLocalVelocities local_velocities;    
-    static tf::TransformBroadcaster tf_broadcaster;
+    std::ostringstream local_tf;
+    tf::Transform transform;
+    tf::Vector3 tf_person_position;
+    tf::Quaternion q_person_to_world;
 
-    foreach(const spencer_tracking_msgs::TrackedPerson& tracked_person, tracked_persons.tracks)
-    {
-      std::ostringstream local_tf;
-      tf::Transform transform;
-      tf::Vector3 tf_person_position;
-      tf::Quaternion q_person_to_world;
+    local_tf << local_tf_prefix << tracked_person.track_id;
+    tf::pointMsgToTF(tracked_person.pose.pose.position, tf_person_position);
+    tf::quaternionMsgToTF(tracked_person.pose.pose.orientation, q_person_to_world);
+    transform.setOrigin(tf_person_position);
+    transform.setRotation(q_person_to_world);
+    tf_broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), tracked_persons.header.frame_id, local_tf.str()));
 
-      local_tf << local_tf_prefix << tracked_person.track_id;
-      tf::pointMsgToTF(tracked_person.pose.pose.position, tf_person_position);
-      tf::quaternionMsgToTF(tracked_person.pose.pose.orientation, q_person_to_world);
-      transform.setOrigin(tf_person_position);
-      transform.setRotation(q_person_to_world);
-      tf_broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), tracked_persons.header.frame_id, local_tf.str()));
-
-      // compute local velocities, store them together with position and frame information in message and push_back into message array
-      local_velocities.tracks.push_back(computeLocalVelocity(tracked_person, local_tf.str()));
-    }
-
-    pub_local_velocities.publish(local_velocities);
+    // compute local velocities, store them together with position and frame information in message and push_back into message array
+    local_velocities.tracks.push_back(computeLocalVelocity(tracked_person, local_tf.str()));
   }
+  pub_local_velocities.publish(local_velocities);
 }
 
 
@@ -183,8 +199,12 @@ int main(int argc, char **argv)
   {
     ros::spinOnce();
 
-    pubTfAndLocalVelocityForTrackedPersons();
-    angularPedestrianGrid(tf_listener);
+    if(tracked_persons.tracks.size() > 0)
+    {
+      pubTfAndLocalVelocityForTrackedPersons();
+      angularPedestrianGrid(tf_listener);
+      setParamsForLocalMapExtraction(n);
+    }
 
     loop_rate.sleep();
   }
