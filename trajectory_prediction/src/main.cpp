@@ -28,6 +28,7 @@ ros::Publisher pub_apg;
 // variables, read from ros params
 std::string sub_topic;
 std::string local_tf_prefix;
+std::string costmap_node_prefix;
 int num_sectors;
 double max_range;
 
@@ -37,17 +38,21 @@ spencer_tracking_msgs::TrackedPersons tracked_persons;
 
 void setParamsForLocalMapExtraction(ros::NodeHandle& n)
 {
+  // For each pedestrian, a separate costmap node has to be launched. This is done at startup, thus there is a max. number of pedestrians
+  // that can be tracked at the same time. This number is defined in the person_aligned_static_map.launch 
+  // file of the static_collision_avoidance package (number of nodes)
   int idx = 0;
   foreach(const spencer_tracking_msgs::TrackedPerson& tracked_person, tracked_persons.tracks)
   {
     std::ostringstream local_tf;
     std::ostringstream full_parameter_global_frame;
     std::ostringstream full_parameter_robot_base_frame;
-    // /person_0/costmap/global_frame
-    // /person_0/costmap/robot_base_frame
+
+    // For each costmap node, set the parameters such that it knows for which frame it has to extract a static map
     local_tf << local_tf_prefix << tracked_person.track_id;
-    full_parameter_global_frame << "/" << local_tf_prefix << idx << "/costmap/global_frame";
-    full_parameter_robot_base_frame << "/" << local_tf_prefix << idx << "/costmap/robot_base_frame";
+    full_parameter_global_frame << "/" << costmap_node_prefix << idx << "/person/global_frame";
+    full_parameter_robot_base_frame << "/" << costmap_node_prefix << idx << "/person/robot_base_frame";
+
     n.setParam(full_parameter_global_frame.str(), local_tf.str());
     n.setParam(full_parameter_robot_base_frame.str(), local_tf.str());
     idx++;
@@ -186,6 +191,8 @@ int main(int argc, char **argv)
   //   load params, globally defined
   ros::param::param<std::string>("yolo_confirmed_tracks_topic", sub_topic, "/spencer/perception/tracked_persons_confirmed_by_yolo");
   ros::param::param<std::string>("local_tf_prefix", local_tf_prefix, "person_");
+  ros::param::param<std::string>("costmap_node_prefix", costmap_node_prefix, "costmap_");
+
   ros::param::param<int>("num_sectors", num_sectors, 72);
   ros::param::param<double>("max_range", max_range, 6.0);
 

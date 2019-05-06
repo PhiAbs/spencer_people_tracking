@@ -39,7 +39,7 @@ Visualization Manager:
       Draw Behind: true
       Enabled: true
       Name: Map
-      Topic: /person_0/costmap/costmap
+      Topic: /map
       Unreliable: false
       Use Timestamp: false
       Value: true
