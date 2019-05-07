@@ -5,7 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Map1
         - /Raw detections1
         - /Raw detections1/Front1
         - /TrackedPersons Visually Confirmed1
@@ -100,6 +99,10 @@ Visualization Manager:
           Value: true
         odom:
           Value: false
+        person_1:
+          Value: true
+        person_2:
+          Value: true
         rear_left_wheel_link:
           Value: true
         rear_mount:
@@ -148,6 +151,10 @@ Visualization Manager:
                   {}
                 rear_right_wheel_link:
                   {}
+            person_1:
+              {}
+            person_2:
+              {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -318,7 +325,7 @@ Visualization Manager:
       Occlusion alpha: 0.5
       Render covariances:
         Line width: 0.0299999993
-        Value: false
+        Value: true
       Render detection IDs: false
       Render history: true
       Render person visual: true
@@ -500,25 +507,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 18.9705162
+      Distance: 12.9278755
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 3.07190156
-        Y: 0.257740825
-        Z: -0.134335801
+        X: 2.61116838
+        Y: -0.114189684
+        Z: -0.312329501
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.719797373
+      Pitch: 0.799797118
       Target Frame: base_footprint
       Value: Orbit (rviz)
-      Yaw: 3.67045546
+      Yaw: 3.39545512
     Saved:
       - Class: rviz/Orbit
         Distance: 15.4204998

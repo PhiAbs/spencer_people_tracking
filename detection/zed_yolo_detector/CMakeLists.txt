@@ -92,14 +92,14 @@ include_directories( include
 # )
 
 ## Declare a cpp executable
-add_executable(zed_yolo_detector src/main.cpp) 
+add_executable(fill_detected_person_message_yolo src/fill_detected_person_message.cpp) 
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(zed_yolo_detector ${catkin_EXPORTED_TARGETS})
+add_dependencies(fill_detected_person_message_yolo ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(zed_yolo_detector
+ target_link_libraries(fill_detected_person_message_yolo
    ${catkin_LIBRARIES}
    ${QT_LIBRARIES}
    ${QT_QTCORE_LIBRARY}
@@ -121,7 +121,7 @@ add_dependencies(zed_yolo_detector ${catkin_EXPORTED_TARGETS})
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS zed_yolo_detector
+install(TARGETS fill_detected_person_message_yolo
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

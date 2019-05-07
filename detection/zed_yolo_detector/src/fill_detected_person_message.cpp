@@ -1,3 +1,6 @@
+
+// Subscribe to the topic on which information about detected persons is published (YOLO detections)
+
 #include "ros/ros.h"
 #include <spencer_tracking_msgs/DetectedPersons.h>
 #include <spencer_tracking_msgs/DetectedPerson.h>
@@ -5,7 +8,7 @@
 std::string pub_topic;
 ros::Publisher pub;
 
-const double LARGE_VARIANCE = 999999999;
+const double LARGE_VARIANCE = 0.5;
 double pose_variance;
 int detection_id_increment, detection_id_offset, current_detection_id; // added for multi-sensor use in SPENCER
 
