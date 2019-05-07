@@ -27,7 +27,7 @@ include_directories( include
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(trajectory_prediction src/main.cpp) 
+add_executable(trajectory_prediction src/trajectory_prediction_infos.cpp) 
 
 add_dependencies(trajectory_prediction ${catkin_EXPORTED_TARGETS})
 
