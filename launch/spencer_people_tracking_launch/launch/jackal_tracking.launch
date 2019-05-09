@@ -57,6 +57,6 @@
     <!-- <include file="$(find spencer_people_tracking_launch)/launch/tracking/group_tracking.launch"/> -->
 
     <!-- VISUALIZATION -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config_file)" required="false" if="$(arg visualization)"/>
+    <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config_file)" required="false" if="$(arg visualization)"/-->
 
 </launch>
