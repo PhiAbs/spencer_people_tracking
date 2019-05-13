@@ -44,7 +44,7 @@ namespace spencer_detected_person_association
         float distance = hypot(d1.pose.pose.position.x - d2.pose.pose.position.x, d1.pose.pose.position.y - d2.pose.pose.position.y);
 
         // Gating: If it fails, set distance to infinity
-        double gatingDistance = 0.5; getPrivateNodeHandle().getParamCached("gating_distance", gatingDistance);
+        double gatingDistance = 1.0; getPrivateNodeHandle().getParamCached("gating_distance", gatingDistance);
         if(distance > gatingDistance) distance = std::numeric_limits<float>::infinity();
 
         return distance;
@@ -58,12 +58,12 @@ namespace spencer_detected_person_association
         // It is assumed that one topic has detections coming from laser data and the other topic detections from rgb data. 
         // laser distances are more reliable, thus give them more weight! (params are set in launch file)
         if (d1.original_detections[0].modality == "laser2d" || d1.original_detections[0].modality == "laser3d"){
-            weight_1 = 0.5; getPrivateNodeHandle().getParamCached("pose_weight_for_laser", weight_1);
-            weight_2 = 0.5; getPrivateNodeHandle().getParamCached("pose_weight_for_rgb", weight_2);
+            weight_1 = 1; getPrivateNodeHandle().getParamCached("pose_weight_for_laser", weight_1);
+            weight_2 = 0; getPrivateNodeHandle().getParamCached("pose_weight_for_rgb", weight_2);
         }
         else{
-            weight_2 = 0.5; getPrivateNodeHandle().getParamCached("pose_weight_for_laser", weight_2);
-            weight_1 = 0.5; getPrivateNodeHandle().getParamCached("pose_weight_for_rgb", weight_1);
+            weight_2 = 1; getPrivateNodeHandle().getParamCached("pose_weight_for_laser", weight_2);
+            weight_1 = 0; getPrivateNodeHandle().getParamCached("pose_weight_for_rgb", weight_1);
         }
 
         const float weightSum = weight_1 + weight_2;

@@ -166,8 +166,10 @@ int main(int argc, char **argv)
 
     privateHandle.getParam("min_matches_per_modality", g_minMatchesPerModality);
     ROS_ASSERT(!g_minMatchesPerModality.empty());
+    std::cout << "min matches per modality" << g_minMatchesPerModality.begin()->second << std::endl;
 
     visual_confirmation_timeout = 2.0; privateHandle.getParam("visual_confirmation_timeout", visual_confirmation_timeout);
+    std::cout << "visual confirmation timeout " << visual_confirmation_timeout << std::endl;
 
     std::string inputTopic = "input_tracks";
     std::string outputTopic = "output_tracks";
@@ -176,7 +178,7 @@ int main(int argc, char **argv)
     typedef message_filters::sync_policies::ExactTime<TrackedPersons, CompositeDetectedPersons> SyncPolicy;
     typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;
 
-    size_t queue_size = 30;
+    size_t queue_size = 1;
     message_filters::Subscriber<TrackedPersons> trackSubscriber(nodeHandle, inputTopic, queue_size);
     message_filters::Subscriber<CompositeDetectedPersons> compositeSubscriber(nodeHandle, compositeTopic, queue_size);
 

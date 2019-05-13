@@ -36,7 +36,11 @@
 
     <!-- Laser detectors -->
     <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_laser_detectors.launch" if="$(arg use_laser_detector)">
-        <arg name="low_confidence_detections" value="false"/>
+        <arg name="low_confidence_detections" value="true"/>
+    </include>
+
+    <!-- Static calibration for Laser Detections -->
+    <include file="$(find static_calibration)/launch/static_calibration.launch" if="$(arg use_laser_detector)">
     </include>
 
     <!-- People tracking -->
@@ -44,7 +48,7 @@
         <arg name="rgbd" default="true"/>
         <arg name="yolo" value="$(arg use_yolo_detector)"/>
         <arg name="upper_body" value="true" if="$(eval use_upper_body_detector or use_pcl_detector)"/>
-        <arg name="laser_low_confidence_detections" default="false"/>
+        <arg name="laser_low_confidence_detections" default="true"/>
     </include>
 
 
@@ -57,6 +61,6 @@
     <!-- <include file="$(find spencer_people_tracking_launch)/launch/tracking/group_tracking.launch"/> -->
 
     <!-- VISUALIZATION -->
-    <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config_file)" required="false" if="$(arg visualization)"/-->
+    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config_file)" required="false" if="$(arg visualization)"/> -->
 
 </launch>

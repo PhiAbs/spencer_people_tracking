@@ -32,9 +32,9 @@
 
         <!-- Filter tracks which have been confirmed by the Yolo detector -->
         <node name="filter_tracks_confirmed_by_yolo" pkg="spencer_tracking_utils" type="filter_visually_confirmed_tracks" output="screen">
-            <param name="visual_confirmation_timeout" value="2.0"/>
+            <param name="visual_confirmation_timeout" value="5.0"/>
             <rosparam param="min_matches_per_modality">
-                yolo: 2
+                yolo: 1
             </rosparam>
             <remap from="input_tracks" to="/spencer/perception/tracked_persons_orientation_fixed"/>
             <remap from="output_tracks" to="/spencer/perception/tracked_persons_confirmed_by_yolo"/>
