@@ -22,6 +22,19 @@
 
 #define PI 3.14159265
 
+// class TrajectoryPredictionInfo()
+// {
+//   public:
+//     TrajectoryPredictionInfo()
+//     {
+
+//     }
+
+//   private:
+
+
+// }; // End of class TrajectoryPredictionInfo
+
 ros::Publisher pub_local_velocities;
 ros::Publisher pub_apg;
 

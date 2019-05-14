@@ -1,4 +1,3 @@
-
 // Subscribe to the topic on which information about detected persons is published (YOLO detections)
 
 #include "ros/ros.h"
@@ -10,18 +9,18 @@ class StaticCalibration
   public:
 
     // Constructor
-    StaticCalibration()
+    StaticCalibration(ros::NodeHandle n_priv, ros::NodeHandle n)
     {
       // load params
-      n.param("detected_persons", sub_topic, std::string("/detected_persons"));
-      n.param("detected_persons_high_recall", sub_topic_high_recall, std::string("/detected_persons_high_recall"));
-      n.param("static_calibration_offset_x", static_calibration_offset_x_, 0.0);
+      n_priv.getParam("detected_persons", sub_topic_);
+      n_priv.getParam("detected_persons_high_recall", sub_topic_high_recall_);
+      n_priv.getParam("static_calibration_offset_x", static_calibration_offset_x_);
 
-      sub = n.subscribe(sub_topic, 1, &StaticCalibration::detectedPersonCallback, this);
-      sub_high_recall = n.subscribe(sub_topic_high_recall, 1, &StaticCalibration::detectedPersonHighRecallCallback, this);
+      sub_ = n.subscribe(sub_topic_, 1, &StaticCalibration::detectedPersonCallback, this);
+      sub_high_recall_ = n.subscribe(sub_topic_high_recall_, 1, &StaticCalibration::detectedPersonHighRecallCallback, this);
 
-      pub = n.advertise<spencer_tracking_msgs::DetectedPersons>("output", 1);
-      pub_high_recall = n.advertise<spencer_tracking_msgs::DetectedPersons>("output_high_recall", 1);
+      pub_ = n.advertise<spencer_tracking_msgs::DetectedPersons>("output", 1);
+      pub_high_recall_ = n.advertise<spencer_tracking_msgs::DetectedPersons>("output_high_recall", 1);
     }
 
     void detectedPersonCallback(const spencer_tracking_msgs::DetectedPersons::ConstPtr& msg)
@@ -33,7 +32,7 @@ class StaticCalibration
       {
         calibrated_msg.detections[i].pose.pose.position.x += static_calibration_offset_x_;
       }
-      pub.publish(calibrated_msg);
+      pub_.publish(calibrated_msg);
     }
 
     void detectedPersonHighRecallCallback(const spencer_tracking_msgs::DetectedPersons::ConstPtr& msg)
@@ -45,19 +44,18 @@ class StaticCalibration
       {
         calibrated_msg.detections[i].pose.pose.position.x += static_calibration_offset_x_;
       }
-      pub_high_recall.publish(calibrated_msg);
+      pub_high_recall_.publish(calibrated_msg);
     }
 
   private:
-    ros::NodeHandle n;
 
-    ros::Subscriber sub;
-    ros::Subscriber sub_high_recall;
-    ros::Publisher pub;
-    ros::Publisher pub_high_recall;
+    ros::Subscriber sub_;
+    ros::Subscriber sub_high_recall_;
+    ros::Publisher pub_;
+    ros::Publisher pub_high_recall_;
 
-    std::string sub_topic;
-    std::string sub_topic_high_recall;
+    std::string sub_topic_;
+    std::string sub_topic_high_recall_;
     double static_calibration_offset_x_;
 }; // End of class StaticCalibration
 
@@ -65,10 +63,14 @@ class StaticCalibration
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "spencer_yolo_listener");
-  ros::Rate loop_rate(20);
+  ros::init(argc, argv, "static_calibration_node");
+  // private nodehandle is used for loading parameters
+  ros::NodeHandle n; 
+  ros::NodeHandle n_priv("~");
 
-  StaticCalibration static_calibration;
+  StaticCalibration static_calibration(n_priv, n);
+
+  ros::Rate loop_rate(20);
   
   while (ros::ok())
   {
