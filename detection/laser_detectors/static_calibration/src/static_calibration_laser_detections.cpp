@@ -7,7 +7,6 @@
 class StaticCalibration
 {
   public:
-
     // Constructor
     StaticCalibration(ros::NodeHandle n_priv, ros::NodeHandle n)
     {
@@ -48,7 +47,6 @@ class StaticCalibration
     }
 
   private:
-
     ros::Subscriber sub_;
     ros::Subscriber sub_high_recall_;
     ros::Publisher pub_;

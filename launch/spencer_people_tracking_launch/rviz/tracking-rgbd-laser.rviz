@@ -113,40 +113,39 @@ Visualization Manager:
       Show Names: true
       Tree:
         map:
-          {}
-        odom:
-          base_link:
-            base_footprint:
-              {}
-            chassis_link:
-              fenders_link:
+          odom:
+            base_link:
+              base_footprint:
                 {}
-              front_left_wheel_link:
-                {}
-              front_right_wheel_link:
-                {}
-              imu_link:
-                {}
-              mid_mount:
-                VLP16_base_link:
-                  VLP16:
-                    {}
-                baseplate_link:
+              chassis_link:
+                fenders_link:
                   {}
-                camera_link:
-                  rgbd_front_top_link:
-                    {}
-                hokuyo_base_link:
-                  hokuyo_base_scan:
-                    {}
-                rear_mount:
+                front_left_wheel_link:
                   {}
-              navsat_link:
-                {}
-              rear_left_wheel_link:
-                {}
-              rear_right_wheel_link:
-                {}
+                front_right_wheel_link:
+                  {}
+                imu_link:
+                  {}
+                mid_mount:
+                  VLP16_base_link:
+                    VLP16:
+                      {}
+                  baseplate_link:
+                    {}
+                  camera_link:
+                    rgbd_front_top_link:
+                      {}
+                  hokuyo_base_link:
+                    hokuyo_base_scan:
+                      {}
+                  rear_mount:
+                    {}
+                navsat_link:
+                  {}
+                rear_left_wheel_link:
+                  {}
+                rear_right_wheel_link:
+                  {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -229,7 +228,7 @@ Visualization Manager:
               Value: true
             - Alpha: 1
               Class: spencer_tracking_rviz_plugin/DetectedPersons
-              Color: 255; 255; 0
+              Color: 255; 0; 0
               Color map offset: 0
               Color transform: Constant color
               Enabled: true
@@ -261,10 +260,10 @@ Visualization Manager:
                 Value: 0
             - Alpha: 1
               Class: spencer_tracking_rviz_plugin/DetectedPersons
-              Color: 255; 0; 0
+              Color: 255; 255; 0
               Color map offset: 0
               Color transform: Constant color
-              Enabled: false
+              Enabled: true
               Excluded person IDs: ""
               Font color: 255; 255; 255
               Font color style: Same color
@@ -287,7 +286,7 @@ Visualization Manager:
               Text spacing: 1
               Topic: /spencer/perception_internal/detected_persons/laser_front_high_recall
               Unreliable: false
-              Value: false
+              Value: true
               Z offset:
                 Use Z position from message: false
                 Value: 0
@@ -531,25 +530,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 23.2641182
+      Distance: 17.2486076
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 7.36606503
-        Y: 0.726469815
-        Z: -0.506435633
+        X: 5.54106712
+        Y: 0.576267242
+        Z: -2.38568759
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.774796903
+      Pitch: 0.679796815
       Target Frame: base_footprint
       Value: Orbit (rviz)
-      Yaw: 3.51045871
+      Yaw: 3.51545787
     Saved:
       - Class: rviz/Orbit
         Distance: 15.4204998
