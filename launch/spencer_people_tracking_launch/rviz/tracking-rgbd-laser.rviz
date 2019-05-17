@@ -263,7 +263,7 @@ Visualization Manager:
               Color: 255; 255; 0
               Color map offset: 0
               Color transform: Constant color
-              Enabled: true
+              Enabled: false
               Excluded person IDs: ""
               Font color: 255; 255; 255
               Font color style: Same color
@@ -286,7 +286,7 @@ Visualization Manager:
               Text spacing: 1
               Topic: /spencer/perception_internal/detected_persons/laser_front_high_recall
               Unreliable: false
-              Value: true
+              Value: false
               Z offset:
                 Use Z position from message: false
                 Value: 0
@@ -537,18 +537,18 @@ Visualization Manager:
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 5.54106712
-        Y: 0.576267242
-        Z: -2.38568759
+        X: 3.55274487
+        Y: 4.48789787
+        Z: -1.67510843
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.679796815
+      Pitch: 0.589796901
       Target Frame: base_footprint
       Value: Orbit (rviz)
-      Yaw: 3.51545787
+      Yaw: 3.87545967
     Saved:
       - Class: rviz/Orbit
         Distance: 15.4204998

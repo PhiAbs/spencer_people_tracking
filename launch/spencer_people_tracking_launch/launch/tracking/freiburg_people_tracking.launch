@@ -11,7 +11,7 @@
     <arg name="laser_low_confidence_detections" default="true"/>
     
     <arg name="tracker" default="true"/>
-    <arg name="occlusion_geodesics" default="false"/>
+    <arg name="occlusion_geodesics" default="true"/>
     
     <!-- Detection-to-detection fusion pipeline. NOTE: Detectors need to be launched separately via
          roslaunch spencer_people_tracking_launch front_rgbd_detectors.launch

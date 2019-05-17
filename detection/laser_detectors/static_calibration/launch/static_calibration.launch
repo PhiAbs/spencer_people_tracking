@@ -4,7 +4,7 @@
         <param name="detected_persons_high_recall" value="/spencer/perception_internal/detected_persons/laser_front_high_recall/uncalibrated"/>
         <param name="static_calibration_offset_x" value="0.112"/>
 
-        <remap from="output" to="/spencer/perception_internal/detected_persons/laser_front_high_recall"/>     <!-- CAREFUL!! the two topics here are switched! this is done for a test since we want to use the high-recall detections!!! -->
-        <remap from="output_high_recall" to="/spencer/perception_internal/detected_persons/laser_front"/>      <!-- CAREFUL!! the two topics here are switched! this is done for a test since we want to use the high-recall detections!!! -->
+        <remap from="output" to="/spencer/perception_internal/detected_persons/laser_front"/>    
+        <remap from="output_high_recall" to="/spencer/perception_internal/detected_persons/laser_front_high_recall"/>
     </node>
 </launch> 
