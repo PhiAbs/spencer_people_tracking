@@ -28,7 +28,6 @@ class TrajectoryPredictionInfo
     TrajectoryPredictionInfo(ros::NodeHandle& n_priv, ros::NodeHandle& n)
     {
       //  load params
-      n_ = n;
       n_priv.getParam("yolo_confirmed_tracks_topic", sub_topic);
       n_priv.getParam("local_tf_prefix", local_tf_prefix);
       n_priv.getParam("costmap_node_prefix", costmap_node_prefix);
@@ -50,7 +49,7 @@ class TrajectoryPredictionInfo
       {
         pubTfAndLocalVelocityForTrackedPersons(tracked_persons);
         angularPedestrianGrid(tracked_persons);
-        // setParamsForLocalMapExtraction(n_, tracked_persons);
+        // setParamsForLocalMapExtraction(n, tracked_persons);
       }
     }
 
@@ -59,8 +58,6 @@ class TrajectoryPredictionInfo
     ros::Publisher pub_local_velocities;
     ros::Publisher pub_apg;
     tf::TransformListener tf_listener;
-
-    ros::NodeHandle n_;
 
     // variables, read from ros parameter server
     std::string sub_topic;
@@ -158,7 +155,7 @@ class TrajectoryPredictionInfo
         // lookup transform between global and local person frame and compute rotation matrix
         std::cout <<"4" << std::endl;
         tf::StampedTransform tf_world_to_person;
-        TrajectoryPredictionInfo::tf_listener.waitForTransform(local_query_tf.str(), "odom", ros::Time(0), ros::Duration(0.5));
+        TrajectoryPredictionInfo::tf_listener.waitForTransform(local_query_tf.str(), "odom", ros::Time(0), ros::Duration(2));
         TrajectoryPredictionInfo::tf_listener.lookupTransform(local_query_tf.str(), "odom", ros::Time(0), tf_world_to_person);
         tf::Matrix3x3 rotation_matrix_world_to_person(tf_world_to_person.getRotation());
         std::cout <<"5" << std::endl;
@@ -192,7 +189,7 @@ class TrajectoryPredictionInfo
         apgs.apg_array.push_back(apg);
         std::cout <<"9" << std::endl;
       }
-      TrajectoryPredictionInfo::pub_apg.publish(apgs);
+      pub_apg.publish(apgs);
     }
 
 
