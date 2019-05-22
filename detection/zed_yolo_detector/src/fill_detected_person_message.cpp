@@ -5,62 +5,71 @@
 #include <spencer_tracking_msgs/DetectedPersons.h>
 #include <spencer_tracking_msgs/DetectedPerson.h>
 
-std::string pub_topic;
-ros::Publisher pub;
 
-const double LARGE_VARIANCE = 0.5;
-double pose_variance;
-int detection_id_increment, detection_id_offset, current_detection_id; // added for multi-sensor use in SPENCER
-
-
-void addAdditionalInformation(spencer_tracking_msgs::DetectedPersons detected_persons)
+class FillMessage
 {
-  int num_detections = detected_persons.detections.size();
-
-  if(num_detections > 0)
-  {
-    for(int i = 0; i < num_detections; i++)
-    {
-        detected_persons.detections[i].pose.covariance[0*6 + 0] = pose_variance;
-        detected_persons.detections[i].pose.covariance[1*6 + 1] = pose_variance;
-        detected_persons.detections[i].pose.covariance[2*6 + 2] = pose_variance;
-        detected_persons.detections[i].pose.covariance[3*6 + 3] = LARGE_VARIANCE;
-        detected_persons.detections[i].pose.covariance[4*6 + 4] = LARGE_VARIANCE;
-        detected_persons.detections[i].pose.covariance[5*6 + 5] = LARGE_VARIANCE;
-
-        detected_persons.detections[i].detection_id = current_detection_id;
-        current_detection_id += detection_id_increment;
-    }
-  }
+  public:
   
-  detected_persons.header.stamp = ros::Time::now();
-  pub.publish(detected_persons);
-}
+    FillMessage(ros::NodeHandle n_priv, ros::NodeHandle n)
+    {
+      n.param("pose_variance", pose_variance_, 0.05);
+      n.param("person_listener", sub_topic_, std::string("/yolo_pedestrian_detector/detected_persons"));
+      n.param("detection_id_increment", detection_id_increment_, 1);
+      n.param("detection_id_offset",    detection_id_offset_, 0);
+
+      LARGE_VARIANCE_ = 0.5;
+      current_detection_id_ = detection_id_offset_;
+
+      sub_ = n.subscribe(sub_topic_, 1, &FillMessage::personCallback, this);
+      pub_ = n.advertise<spencer_tracking_msgs::DetectedPersons>("output", 1);
+    }
 
 
-void personCallback(const spencer_tracking_msgs::DetectedPersons::ConstPtr& msg)
-{
-    addAdditionalInformation(*msg);
-}
+    void personCallback(const spencer_tracking_msgs::DetectedPersons::ConstPtr& msg)
+    {
+      spencer_tracking_msgs::DetectedPersons detected_persons = *msg;
+
+      int num_detections = detected_persons.detections.size();
+
+      if(num_detections > 0)
+      {
+        for(int i = 0; i < num_detections; i++)
+        {
+            detected_persons.detections[i].pose.covariance[0*6 + 0] = pose_variance_;
+            detected_persons.detections[i].pose.covariance[1*6 + 1] = pose_variance_;
+            detected_persons.detections[i].pose.covariance[2*6 + 2] = pose_variance_;
+            detected_persons.detections[i].pose.covariance[3*6 + 3] = LARGE_VARIANCE_;
+            detected_persons.detections[i].pose.covariance[4*6 + 4] = LARGE_VARIANCE_;
+            detected_persons.detections[i].pose.covariance[5*6 + 5] = LARGE_VARIANCE_;
+
+            detected_persons.detections[i].detection_id = current_detection_id_;
+            current_detection_id_ += detection_id_increment_;
+        }
+      }
+      
+      detected_persons.header.stamp = ros::Time::now();
+      pub_.publish(detected_persons);
+    }
+
+
+  private:
+    ros::Subscriber sub_;
+    ros::Publisher pub_;
+    std::string sub_topic_;
+    double LARGE_VARIANCE_;
+    double pose_variance_;
+    int detection_id_increment_, detection_id_offset_, current_detection_id_; // added for multi-sensor use in SPENCER
+
+}; // end of class FillMessage
 
 
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "spencer_yolo_listener");
   ros::NodeHandle n;
+  ros::NodeHandle n_priv;
 
-  //   load params
-  std::string sub_topic;
-  n.param("pose_variance", pose_variance, 0.05);
-  n.param("detected_persons", pub_topic, std::string("/spencer/perception_internal/detected_persons/rgbd_front_top/yolo"));
-  n.param("person_listener", sub_topic, std::string("/zed_yolo_detected_persons"));
-  n.param("detection_id_increment", detection_id_increment, 1);
-  n.param("detection_id_offset",    detection_id_offset, 0);
-
-  current_detection_id = detection_id_offset;
-
-  ros::Subscriber sub = n.subscribe(sub_topic, 1, personCallback);
-  pub = n.advertise<spencer_tracking_msgs::DetectedPersons>(pub_topic, 1);
+  FillMessage fill_message(n_priv, n);
 
   ros::Rate loop_rate(20);
   

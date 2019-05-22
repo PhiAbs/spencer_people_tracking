@@ -216,7 +216,7 @@ Visualization Manager:
                 Value: 0
             - Class: rviz/Image
               Enabled: true
-              Image Topic: /zed_yolo_detected_persons/image
+              Image Topic: /yolo_pedestrian_detector/detected_persons/image
               Max Value: 1
               Median window: 5
               Min Value: 0
@@ -530,25 +530,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 17.2486076
+      Distance: 14.744772
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 3.55274487
-        Y: 4.48789787
-        Z: -1.67510843
+        X: 3.98391438
+        Y: 1.4159193
+        Z: -1.37561393
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.589796901
+      Pitch: 0.614796877
       Target Frame: base_footprint
       Value: Orbit (rviz)
-      Yaw: 3.87545967
+      Yaw: 3.54545736
     Saved:
       - Class: rviz/Orbit
         Distance: 15.4204998
