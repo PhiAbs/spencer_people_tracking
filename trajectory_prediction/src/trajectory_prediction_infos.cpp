@@ -128,10 +128,7 @@ class TrajectoryPredictionInfo
     {
       double sector_size = 2 * PI / num_sectors;
 
-      std::cout <<"1 " << std::endl;
-
       spencer_tracking_msgs::TrajectoryPredictionAPGs apgs;
-      std::cout << "tracks size " << tracked_persons.tracks.size() << std::endl;
       for(int i = 0; i < tracked_persons.tracks.size(); i++)
       {
         spencer_tracking_msgs::TrajectoryPredictionAPG apg;
@@ -142,23 +139,18 @@ class TrajectoryPredictionInfo
         apg.header = tracked_persons.header;
         apg.header.frame_id = local_query_tf.str();
 
-        std::cout <<"2" << std::endl;
-
         // fill array with max_range
         for(int idx = 0; idx < num_sectors; idx++)
         {
           apg.min_distances.push_back(max_range);
         }
 
-        std::cout <<"3" << std::endl;
 
         // lookup transform between global and local person frame and compute rotation matrix
-        std::cout <<"4" << std::endl;
         tf::StampedTransform tf_world_to_person;
         TrajectoryPredictionInfo::tf_listener.waitForTransform(local_query_tf.str(), "odom", ros::Time(0), ros::Duration(2));
         TrajectoryPredictionInfo::tf_listener.lookupTransform(local_query_tf.str(), "odom", ros::Time(0), tf_world_to_person);
         tf::Matrix3x3 rotation_matrix_world_to_person(tf_world_to_person.getRotation());
-        std::cout <<"5" << std::endl;
 
         // compute the distance between the query pedestrian and every other pedestrian
         for(int j = 0; j < tracked_persons.tracks.size(); j++)
@@ -167,27 +159,24 @@ class TrajectoryPredictionInfo
           {
             double abs_distance = sqrt(pow(tracked_persons.tracks[i].pose.pose.position.x - tracked_persons.tracks[j].pose.pose.position.x, 2) + 
               pow(tracked_persons.tracks[i].pose.pose.position.y - tracked_persons.tracks[j].pose.pose.position.y, 2));
-            std::cout <<"6" << std::endl;
             if(abs_distance < max_range)
             {
               // change data type to tf::Vector3
               tf::Vector3 global_position;
               tf::pointMsgToTF(tracked_persons.tracks[i].pose.pose.position, global_position);
-              std::cout <<"7" << std::endl;
 
               // Transform the global position of a pedestrian into the coordinate system of the query pedestrian
               tf::Vector3 local_position = rotation_matrix_world_to_person * global_position;
 
               // find the person's angle relative to the local coordinate frame (polar coordinates)
               double angle = atan2(local_position.getY(), local_position.getX());
+              if (angle < 0) {angle = 2*PI + angle;}
               int sector_nr = std::floor(angle / sector_size);
               apg.min_distances[sector_nr] = abs_distance;
-              std::cout <<"8" << std::endl;
             }
           }
         }
         apgs.apg_array.push_back(apg);
-        std::cout <<"9" << std::endl;
       }
       pub_apg.publish(apgs);
     }
