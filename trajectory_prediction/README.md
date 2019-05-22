@@ -1,1 +1,1 @@
-Publish information that is required for trajectory prediction (done with neural network?)
+Publish information that is required for trajectory prediction with LSTM
