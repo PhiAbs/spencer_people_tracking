@@ -1,5 +1,6 @@
 ### Use the spencer people tracking pipeline on Jackal 
-launch 
+launch:
+ 
     roslaunch spencer_people_tracking_launch jackal_tracking.launch
 
 #### added features
