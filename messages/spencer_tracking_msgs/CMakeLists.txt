@@ -29,6 +29,10 @@ add_message_files(
    ImmDebugInfo.msg
    ImmDebugInfos.msg
    TrackingTimingMetrics.msg
+   TrajectoryPredictionLocalVelocity.msg
+   TrajectoryPredictionsLocalVelocities.msg
+   TrajectoryPredictionAPG.msg
+   TrajectoryPredictionAPGs.msg
 )
 
 # Generate services in the 'srv' folder

@@ -1,5 +1,5 @@
 <launch>
-    <arg name="config_file" default="$(find rwth_ground_plane)/config/config_Asus.inp" />
+    <arg name="config_file" default="$(find rwth_ground_plane)/config/config_realsense.inp" />
     <arg name="queue_size" default="5" />
     <arg name="camera_namespace" default="/head_xtion" />
     <arg name="ground_plane" default="/ground_plane" />

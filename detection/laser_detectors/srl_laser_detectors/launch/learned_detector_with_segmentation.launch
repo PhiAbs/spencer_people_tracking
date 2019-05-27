@@ -16,7 +16,7 @@
     <arg name="detection_id_offset" default="0"/>
 
     <arg name="pose_variance" default="0.1"/> <!-- diagonal element of output R matrix (position uncertainty) -->
-    <arg name="adaboost_threshold" default="0.0"/> <!-- decision threshold for the signum function -->
+    <arg name="adaboost_threshold" default="0.5"/> <!-- decision threshold for the signum function -->
 
     <!-- Segmentation -->
     <arg name="segmentation" default="true"/>  <!-- set to false if segmentation is provided externally -->

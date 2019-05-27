@@ -1,3 +1,15 @@
+### Use the spencer people tracking pipeline on Jackal 
+launch 
+    roslaunch spencer_people_tracking_launch jackal_tracking.launch
+
+#### added features
+
+- **YOLOv3 object detector for RGB based pedestrian detection:** Instead of the upper body detector, one can use YOLOv3 for pedestrian detection, in combination with the package available at https://github.com/PhiAbs/zed-yolo and the ZED stereo camera. The different detectors can be turned on or off in the jackal_tracking.launch file.
+- **Realsense data type converter:** The depth image coming from the realsense d435 camera had a wrong format. The file from https://gist.github.com/tim-fan/a2abe1fe15cce8111d06c5c2187c7e97 was included in a new package which allows to use the realsense camera together with the upper body detector.
+- **Static laser calibration:** The laser detections had an offset in x direction (away from the robot). The package static_calibration subtracts this offset. 
+- **Providing information for data driven trajectory prediction:** The package trajectory_prediction publishes information on some ROS topics that can be used for data driven trajectory prediction.
+
+
 ### SPENCER Multi-Modal People Detection & Tracking Framework &nbsp;&nbsp;&nbsp;[![Build Status](https://lcas.lincoln.ac.uk/buildfarm/buildStatus/icon?job=Kbin_uX64__spencer_people_tracking_full__ubuntu_xenial_amd64__binary)](https://lcas.lincoln.ac.uk/buildfarm/job/Kbin_uX64__spencer_people_tracking_full__ubuntu_xenial_amd64__binary)
 
 ###### Multi-modal ROS-based people and group detection & tracking framework for mobile robots developed within the context of the EU FP7 project [SPENCER](http://www.spencer.eu).

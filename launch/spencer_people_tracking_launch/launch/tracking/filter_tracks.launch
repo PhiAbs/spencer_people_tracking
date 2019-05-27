@@ -21,6 +21,7 @@
 
         <!-- Filter tracks which have been confirmed by HOG -->
         <node name="filter_tracks_confirmed_by_HOG" pkg="spencer_tracking_utils" type="filter_visually_confirmed_tracks">
+            <param name="visual_confirmation_timeout" value="2.0"/>
             <rosparam param="min_matches_per_modality">
                 mono: 10
             </rosparam>
@@ -29,8 +30,20 @@
             <remap from="composite_detected_persons" to="/spencer/perception/detected_persons_composite"/>
         </node>
 
+        <!-- Filter tracks which have been confirmed by the Yolo detector -->
+        <node name="filter_tracks_confirmed_by_yolo" pkg="spencer_tracking_utils" type="filter_visually_confirmed_tracks" output="screen">
+            <param name="visual_confirmation_timeout" value="5.0"/>
+            <rosparam param="min_matches_per_modality">
+                yolo: 1
+            </rosparam>
+            <remap from="input_tracks" to="/spencer/perception/tracked_persons_orientation_fixed"/>
+            <remap from="output_tracks" to="/spencer/perception/tracked_persons_confirmed_by_yolo"/>
+            <remap from="composite_detected_persons" to="/spencer/perception/detected_persons_composite"/>
+        </node>
+
         <!-- Filter tracks which have been confirmed by RGB-D (upper-body detector) -->
         <node name="filter_tracks_confirmed_by_upper_body" pkg="spencer_tracking_utils" type="filter_visually_confirmed_tracks">
+            <param name="visual_confirmation_timeout" value="2.0"/>
             <rosparam param="min_matches_per_modality">
                 rgbd: 5
             </rosparam>
@@ -41,6 +54,7 @@
 
         <!-- Filter tracks which have been visually confirmed by ANY visual detector -->
         <node name="filter_tracked_persons_confirmed_by_HOG_or_upper_body" pkg="spencer_tracking_utils" type="filter_tracks_logically">
+            <param name="track_timeout" value="5.0"/>
             <param name="logic_op" value="OR"/>
             <remap from="input_tracks1" to="/spencer/perception/tracked_persons_confirmed_by_HOG"/>
             <remap from="input_tracks2" to="/spencer/perception/tracked_persons_confirmed_by_upper_body"/>
@@ -49,6 +63,7 @@
 
         <!-- Filter tracks which have NOT been visually confirmed by ANY detector -->
         <node name="filter_tracked_persons_not_confirmed_by_HOG_or_upper_body" pkg="spencer_tracking_utils" type="filter_tracks_logically">
+            <param name="track_timeout" value="5.0"/>
             <param name="logic_op" value="XOR"/>
             <remap from="input_tracks1" to="/spencer/perception/tracked_persons_confirmed_by_HOG_or_upper_body"/>
             <remap from="input_tracks2" to="/spencer/perception/tracked_persons_orientation_fixed"/>
@@ -58,6 +73,7 @@
 
         <!-- Filter tracks which have been visually confirmed by ALL visual detectors -->
         <node name="filter_tracked_persons_confirmed_by_HOG_and_upper_body" pkg="spencer_tracking_utils" type="filter_tracks_logically">
+            <param name="track_timeout" value="5.0"/>
             <param name="logic_op" value="AND"/>
             <remap from="input_tracks1" to="/spencer/perception/tracked_persons_confirmed_by_HOG"/>
             <remap from="input_tracks2" to="/spencer/perception/tracked_persons_confirmed_by_upper_body"/>
@@ -66,6 +82,7 @@
 
         <!-- Filter tracks which have NOT been visually confirmed by ALL detectors -->
         <node name="filter_tracked_persons_not_confirmed_by_HOG_and_upper_body" pkg="spencer_tracking_utils" type="filter_tracks_logically">
+            <param name="track_timeout" value="5.0"/>
             <param name="logic_op" value="XOR"/>
             <remap from="input_tracks1" to="/spencer/perception/tracked_persons_confirmed_by_HOG_and_upper_body"/>
             <remap from="input_tracks2" to="/spencer/perception/tracked_persons_orientation_fixed"/>
@@ -75,6 +92,7 @@
 
         <!-- Filter tracks which have been visually confirmed by ANY detector OR are moving -->
         <node name="filter_tracked_persons_confirmed_by_HOG_or_upper_body_or_moving" pkg="spencer_tracking_utils" type="filter_tracks_logically">
+            <param name="track_timeout" value="5.0"/>
             <param name="logic_op" value="OR"/>
             <remap from="input_tracks1" to="/spencer/perception/tracked_persons_confirmed_by_HOG_or_upper_body"/>
             <remap from="input_tracks2" to="/spencer/perception/tracked_persons_moving"/>
@@ -83,6 +101,7 @@
 
         <!-- Filter tracks which have NOT been visually confirmed by ANY detector OR are moving -->
         <node name="filter_tracked_persons_not_confirmed_by_HOG_or_upper_body_or_moving" pkg="spencer_tracking_utils" type="filter_tracks_logically">
+            <param name="track_timeout" value="5.0"/>
             <param name="logic_op" value="XOR"/>
             <remap from="input_tracks1" to="/spencer/perception/tracked_persons_confirmed_by_HOG_or_upper_body_or_moving"/>
             <remap from="input_tracks2" to="/spencer/perception/tracked_persons_orientation_fixed"/>

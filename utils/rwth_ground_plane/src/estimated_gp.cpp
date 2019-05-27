@@ -43,6 +43,7 @@ void ReadConfigFile(string path_config_file)
 
     ConfigFile config(path_config_file);
 
+
     /////////////////////////////////GP Estimator/////////////////////////
     Globals::nrInter_ransac = config.read<int>("nrInter_ransac");
     Globals::numberOfPoints_reconAsObstacle = config.read<int>("numberOfPoints_reconAsObstacle");
@@ -71,7 +72,6 @@ void callback(const ImageConstPtr &depth,  const CameraInfoConstPtr &info)
 
     Camera camera(K,R,t,GP);
     PointCloud point_cloud(camera, matrix_depth);
-
 
     GP = GPEstimator.ComputeGroundPlane(point_cloud);
 
@@ -111,6 +111,7 @@ int main(int argc, char **argv)
     // Declare variables that can be modified by launch file or command line.
     int queue_size;
     string cam_ns;
+    string adaptor_ns;
     string pub_topic_gp;
     string config_file;
 
@@ -121,9 +122,10 @@ int main(int argc, char **argv)
     private_node_handle_.param("queue_size", queue_size, int(5));
     private_node_handle_.param("config_file", config_file, string(""));
 
-    private_node_handle_.param("camera_namespace", cam_ns, string("/head_xtion"));
-    string topic_depth_image = cam_ns + "/depth/image";
-    string topic_camera_info = cam_ns + "/rgb/camera_info";
+    private_node_handle_.param("camera_namespace", cam_ns, string("/spencer/sensors/rgbd_front_top"));
+    private_node_handle_.param("realsense_adaptor_ns", adaptor_ns, string("/converter/rgbd_front_top"));
+    string topic_depth_image = adaptor_ns + "/depth/image_rect";
+    string topic_camera_info = cam_ns + "/color/camera_info";
 
     if(strcmp(config_file.c_str(),"") == 0) {
         ROS_ERROR("No config file specified.");

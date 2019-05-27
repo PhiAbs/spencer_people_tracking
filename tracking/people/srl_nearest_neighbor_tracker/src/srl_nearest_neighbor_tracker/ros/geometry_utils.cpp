@@ -165,7 +165,7 @@ void GeometryUtils::meanAndCovarianceToPoseAndTwist(const StateVector& x, const 
 {
     // Some constants for determining the pose
     const double AVERAGE_ROTATION_VARIANCE = pow(10.0 / 180 * M_PI, 2); // FIXME: determine from vx, vy?
-    const double INFINITE_VARIANCE = 9999999; // should not really use infinity here because then the covariance matrix cannot be rotated (singularities!)
+    const double INFINITE_VARIANCE = 0.5; // should not really use infinity here because then the covariance matrix cannot be rotated (singularities!)
 
     StateVisVector xVis = x.head(STATE_VISUALIZATION_DIM);
     StateVisMatrix CVis = C.block<STATE_VISUALIZATION_DIM, STATE_VISUALIZATION_DIM>(0,0);
