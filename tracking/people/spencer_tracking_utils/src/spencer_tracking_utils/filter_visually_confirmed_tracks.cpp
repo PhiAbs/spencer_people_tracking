@@ -138,6 +138,10 @@ void newTrackedPersonsAndCompositesReceived(const TrackedPersons::ConstPtr& trac
                     filteredTracks->tracks.push_back(trackedPerson);
                 } 
             }
+            // If the track is no longer confirmed by neither sensor, we still keep the track for a bit!! This way we can track a pedestrian across occlusions.
+            else{
+                filteredTracks->tracks.push_back(trackedPerson);
+            }
         }
     }
 
