@@ -31,7 +31,6 @@ class TrajectoryPredictionInfo
       n_priv.getParam("yolo_confirmed_tracks_topic", sub_topic);
       n_priv.getParam("local_tf_prefix", local_tf_prefix);
       n_priv.getParam("costmap_node_prefix", costmap_node_prefix);
-
       n_priv.getParam("num_sectors", num_sectors);
       n_priv.getParam("max_range", max_range);
 
@@ -152,21 +151,26 @@ class TrajectoryPredictionInfo
         TrajectoryPredictionInfo::tf_listener.lookupTransform(local_query_tf.str(), "odom", ros::Time(0), tf_world_to_person);
         tf::Matrix3x3 rotation_matrix_world_to_person(tf_world_to_person.getRotation());
 
+        tf::Vector3 global_position_me;
+        tf::pointMsgToTF(tracked_persons.tracks[i].pose.pose.position, global_position_me);
+
         // compute the distance between the query pedestrian and every other pedestrian
         for(int j = 0; j < tracked_persons.tracks.size(); j++)
         {
           if(j != i)
           {
-            double abs_distance = sqrt(pow(tracked_persons.tracks[i].pose.pose.position.x - tracked_persons.tracks[j].pose.pose.position.x, 2) + 
-              pow(tracked_persons.tracks[i].pose.pose.position.y - tracked_persons.tracks[j].pose.pose.position.y, 2));
+            double abs_distance = sqrt(pow(tracked_persons.tracks[i].pose.pose.position.x -
+                                               tracked_persons.tracks[j].pose.pose.position.x, 2) +
+                                           pow(tracked_persons.tracks[i].pose.pose.position.y -
+                                               tracked_persons.tracks[j].pose.pose.position.y, 2));
             if(abs_distance < max_range)
             {
               // change data type to tf::Vector3
-              tf::Vector3 global_position;
-              tf::pointMsgToTF(tracked_persons.tracks[i].pose.pose.position, global_position);
+              tf::Vector3 global_position_him;
+              tf::pointMsgToTF(tracked_persons.tracks[i].pose.pose.position, global_position_him);
 
               // Transform the global position of a pedestrian into the coordinate system of the query pedestrian
-              tf::Vector3 local_position = rotation_matrix_world_to_person * global_position;
+              tf::Vector3 local_position = rotation_matrix_world_to_person * (global_position_him - global_position_me);
 
               // find the person's angle relative to the local coordinate frame (polar coordinates)
               double angle = atan2(local_position.getY(), local_position.getX());
