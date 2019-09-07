@@ -9,7 +9,7 @@ Create a catkin workspace
 Clone and build package
 
         cd src
-        git clone https://github.com/PhiAbs/master.git
+        git clone https://github.com/PhiAbs/zed-yolo.git
         cd ..
         catkin_make
 
