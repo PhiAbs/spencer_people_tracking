@@ -1,23 +1,22 @@
 # Spencer People Tracker with YOLO
-This package extends the existing Spencer People Tracker with a data-driven, RGB-D based pedestrian detector. For this purpose, the [YOLO object detector](https://pjreddie.com/darknet/yolo/) is used. Using the ZED stereo camera from Stereolabs, YOLO detects pedestrians in an RGB image. The ZED-YOLO wrapper then computes the pedestrian's position in 3D space using the camera's pointcloud. 
-The Spencer People Tracker already provides RGB-D based pedestrian detectors. With YOLO, however, pedestrians can be detected more reliably. 
-The YOLO detector has been integrated into the Spencer People Tracking package as an additional pedestrian detector. The other detectors can still be used if one wishes to do so. 
+This package integrates the data-driven [YOLO object detector](https://pjreddie.com/darknet/yolo/) as a pedestrian detector into the Spencer People Tracking pipeline. The [ZED-YOLO wrapper](https://github.com/stereolabs/zed-yolo) from Stereolabs was integrated into ROS and then added to the Spencer tracking pipeline. Thus, the YOLO  object detector is specifically designed to work with the ZED camera. The rest of the package can also be used with other devices, e.g. a RealSense camera. 
 
-- **YOLOv3 object detector for RGB based pedestrian detection:** Instead of the upper body detector, one can use YOLOv3 for pedestrian detection, in combination with the package available at https://github.com/PhiAbs/zed-yolo and the ZED stereo camera. The different detectors can be turned on or off in the jackal_tracking.launch file.
-- **Realsense data type converter:** The depth image coming from the realsense d435 camera had a wrong format. The file from https://gist.github.com/tim-fan/a2abe1fe15cce8111d06c5c2187c7e97 was included in a new package which allows to use the realsense camera together with the upper body detector.
-- **Static laser calibration:** The laser detections had an offset in x direction (away from the robot). The package static_calibration subtracts this offset. 
-- **Providing information for data driven trajectory prediction:** The package trajectory_prediction publishes information on some ROS topics that can be used for data driven trajectory prediction.
+More information about the functionalities of the Spencer People Tracking package can be found [here](spencer_people_tracking/README.md). 
 
-The complete Pipeline looks as follows: 
+With YOLO, pedestrians can be detected at close range (min. distance is approx. 0.9m) and up to a distance of several meters. Their position is computed using the depth measurements from the ZED camera. Since YOLO has a low false positive rate (depending on the chosen parameters and the weight file), it is possible to filter out false positives from the LIDAR based detector. 
+
+The most important features of this package are listed here:
+- Detect pedestrians using the ZED camera from Stereolabs and the YOLO object detector
+- Use a YOLO model that was trained on the COCO dataset, which contains Pedestrians as a class. Thus, no additional training is neccessary
+- Filter multiple detections of the same pedestrian using nonmax suppression
+- Compute the pedestrian's Position using the pointcloud from the ZED stereo camera
+- The ZED-YOLO wrapper is integrated into ROS 
+- Other detectors which were already implemented in the Spencer package can still be used, also with other cameras than the ZED camera
+
+
 <div align='center'>
-<img src="images/detection_tracking_prediction_pipeline.png"></img>
-</div>
-
-More information about the Spencer People Tracking pipeline can be found [here](spencer_people_tracking/README.md)
-
-## Results
-<div align='center'>
-<img src="images/tracking_5_persons.png"></img>
+<img src="images/tracking_5_persons_img.png"></img>
+<img src="images/tracking_5_persons_sim.png"></img>
 </div>
 
 
@@ -82,6 +81,9 @@ normal model:
     roslaunch yolo_pedestrian_detector pedestrian_detector.launch
 
 ### Launch the Spencer people tracking pipeline
-roslaunch spencer_people_tracking_launch jackal_tracking.launch
+In the launch file below, one can choose the pedestrian detector one wants to use. YOLO is the default detector.
+One must publish the camera's and LIDAR's tf. This can be done in the launch file if it is not done anywhere else already (set to False by default). 
+
+    roslaunch spencer_people_tracking_launch tracking_with_yolo.launch
 
 

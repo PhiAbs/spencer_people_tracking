@@ -1,30 +1,19 @@
 <launch>
     <!-- Launch file arguments -->
 
-    <arg name="use_realsense" default="true"/>
     <arg name="use_laser_detector" default="true"/>  <!-- use laser detector?-->
-    <arg name="use_upper_body_detector" default="true"/> <!-- use depth-template-based upper-body detector? -->
-
-    <arg name="use_yolo_detector" default="false"/> <!-- use depth-template-based upper-body detector? -->
+    <arg name="use_yolo_detector" default="true"/> <!-- use data-driven YOLO detector? -->
+    
+    <arg name="use_upper_body_detector" default="false"/> <!-- use depth-template-based upper-body detector? -->
     <arg name="use_pcl_detector" default="false"/> <!-- use ROI-HOG detector from PCL library? cannot be used with upper-body detector at the same time! -->
     <arg name="use_hog_detector" default="false"/> <!-- use RGB groundHOG detector? Requires cudaHOG library-->
 
     <arg name="dummy_transforms" default="false"/> <!-- publish TF transform for sensor to groundplane -->
-    <arg name="height_above_ground" default="0.8"/>  <!-- 0.735m on ground, 1.49 on table in meters, assumes a horizontally oriented RGB-D sensor; important for accurate detection -->
-    <arg name="camera_x_offset" default="0.1"/>  <!-- TODO if this value is something else than 0, detection does no work!! -->
+    <arg name="height_above_ground" default="0.8"/>  <!-- only used for dummy transform -->
+    <arg name="camera_x_offset" default="0.1"/>  <!-- only used for dummy transform -->
 
     <arg name="visualization" default="true"/>
     <arg name="rviz_config_file" default="$(find spencer_people_tracking_launch)/rviz/tracking-rgbd-laser.rviz"/>
-
-    <!-- Camera -->
-    <include file="$(find realsense_spencer)/launch/rs_d400_custom.launch" if="$(arg use_realsense)">
-        <arg name="camera" value="/spencer/sensors/rgbd_front_top"/>
-        <arg name="tf_prefix" value="/rgbd_front_top"/>
-        <arg name="filters" value="disparity,temporal,spatial"/>
-    </include>
-
-    <!-- Realsense Depth image converter -->
-    <node pkg="realsense_spencer" type="realsense_spencer_adaptor.py" name="realsense_spencer_adaptor" if="$(arg use_realsense)"/>
 
     <!-- Set ground plane distance -->
     <rosparam param="/spencer/perception_internal/people_detection/ground_plane/distance" subst_value="true">$(arg height_above_ground)</rosparam>
@@ -38,7 +27,7 @@
     </group>
 
     <!-- RGB-D detectors -->
-    <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_front_rgbd_detectors.launch">
+    <include file="$(find spencer_people_tracking_launch)/launch/detectors/yolo_front_rgbd_detectors.launch">
         <arg name="upper_body" value="$(arg use_upper_body_detector)"/>
         <arg name="yolo_detector" value="$(arg use_yolo_detector)"/>
         <arg name="pcl_detector" value="$(arg use_pcl_detector)"/>
@@ -46,8 +35,12 @@
     </include>
 
     <!-- Laser detectors -->
-    <include file="$(find spencer_people_tracking_launch)/launch/detectors/jackal_laser_detectors.launch" if="$(arg use_laser_detector)">
-        <arg name="low_confidence_detections" value="false"/>
+    <include file="$(find spencer_people_tracking_launch)/launch/detectors/yolo_laser_detectors.launch" if="$(arg use_laser_detector)">
+        <arg name="low_confidence_detections" value="true"/>
+    </include>
+
+    <!-- Static calibration for Laser Detections -->
+    <include file="$(find static_calibration)/launch/static_calibration.launch" if="$(arg use_laser_detector)">
     </include>
 
     <!-- People tracking -->
@@ -55,13 +48,19 @@
         <arg name="rgbd" default="true"/>
         <arg name="yolo" value="$(arg use_yolo_detector)"/>
         <arg name="upper_body" value="true" if="$(eval use_upper_body_detector or use_pcl_detector)"/>
-        <arg name="laser_low_confidence_detections" default="false"/>
+        <arg name="laser_low_confidence_detections" default="true"/>
+    </include>
+
+
+    <!-- Trajectory prediction: publish required information -->
+    <include file="$(find trajectory_prediction)/launch/trajectory_prediction.launch">
+        <arg name="yolo_confirmed_tracks_topic" default="/spencer/perception/tracked_persons_confirmed_by_yolo" />
     </include>
 
     <!-- Group tracking OFF -->
     <!-- <include file="$(find spencer_people_tracking_launch)/launch/tracking/group_tracking.launch"/> -->
 
     <!-- VISUALIZATION -->
-    <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config_file)" required="false" if="$(arg visualization)"/-->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config_file)" required="false" if="$(arg visualization)"/>
 
 </launch>

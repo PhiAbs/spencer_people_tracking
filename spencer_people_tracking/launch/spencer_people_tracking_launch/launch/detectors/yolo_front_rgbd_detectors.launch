@@ -1,5 +1,4 @@
 <launch>
-
     <arg name="yolo_detector" default="true"/>
     <arg name="upper_body" default="false"/>
     <arg name="pcl_detector" default="false"/> <!-- do not use at the same time with upper-body detector! -->
