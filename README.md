@@ -14,10 +14,10 @@ The most important features of this package are listed here:
 - Other detectors which were already implemented in the Spencer package can still be used, also with other cameras than the ZED camera
 
 
-<div align='center'>
-<img src="images/tracking_5_persons_img.jpg"></img>
-<img src="images/tracking_5_persons_sim.jpg"></img>
-</div>
+<p align='center'>
+    <img src="images/tracking_5_persons_img.jpg" height="100"></img>
+    <img src="images/tracking_5_persons_sim.jpg" height="100"></img>
+</p>
 
 
 ## Sensor Requirements
