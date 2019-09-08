@@ -17,11 +17,8 @@ The most important features of this package are listed here:
 
 
 | ![](images/tracking_5_persons_img.jpg) | 
-|:--:| 
 | *YOLO Detections in RGB image* |
-|:--:| 
 | ![](images/tracking_5_persons_sim.jpg) | 
-|:--:| 
 | *Detections and Tracks of pedestrians in rviz. Yellow boxes: LIDAR based detections. Blue boxes: YOLO detections* |
 
 
