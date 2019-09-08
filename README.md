@@ -15,8 +15,8 @@ The most important features of this package are listed here:
 
 
 <div align='center'>
-<img src="images/tracking_5_persons_img.png"></img>
-<img src="images/tracking_5_persons_sim.png"></img>
+<img src="images/tracking_5_persons_img.jpg"></img>
+<img src="images/tracking_5_persons_sim.jpg"></img>
 </div>
 
 
