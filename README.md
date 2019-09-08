@@ -16,10 +16,12 @@ The most important features of this package are listed here:
 - The YOLOv3 model is able to run at around 18 FPS on an nvidia jetson agx xavier board
 
 
-| ![](images/tracking_5_persons_img.jpg) | 
-| *YOLO Detections in RGB image* |
-| ![](images/tracking_5_persons_sim.jpg) | 
-| *Detections and Tracks of pedestrians in rviz. Yellow boxes: LIDAR based detections. Blue boxes: YOLO detections* |
+Below one can see YOLO detections in an RGB image and the visualizations in rviz. Yellow boxes: LIDAR based detections. Blue boxes: YOLO detections
+
+<p align='center'>
+<img src="images/tracking_5_persons_img.jpg"></img>
+<img src="images/tracking_5_persons_sim.jpg"></img>
+</p>
 
 
 
