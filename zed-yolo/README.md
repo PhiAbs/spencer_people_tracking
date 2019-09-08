@@ -1,18 +1,6 @@
 # Stereolabs ZED - YOLO 3D
 This package lets you use [YOLO (v2 or v3)](http://pjreddie.com/darknet/yolo/) to detect pedestrians.
 
-The left image will be used to display the detected pedestrians alongside the position relative to the camera.
-
-
-## Prerequisites
-- Ubuntu 16.04 or Ubuntu 18.04
-- [ZED SDK](https://www.stereolabs.com/developers/) and its dependencies ([CUDA](https://developer.nvidia.com/cuda-downloads))
-
-
-## Installation
-refer to the readme in the yolo_pedestrian_detector folder
-
-
 ## ROS integration
 The image with the marked pedestrians as well as a vector containing all detected persons (spencer_tracking_msgs::DetectedPersons) are published on the two following topics:
 - /zed_yolo_detected_persons/image

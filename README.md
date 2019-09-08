@@ -11,12 +11,13 @@ The most important features of this package are listed here:
 - Filter multiple detections of the same pedestrian using nonmax suppression
 - Compute the pedestrian's Position using the pointcloud from the ZED stereo camera
 - The ZED-YOLO wrapper is integrated into ROS 
+- A LIDAR measures the distance to the surface of a solid body, but one is usually interested in the distance to the center of a body. The package **static calibration** corrects for that offset
 - Other detectors which were already implemented in the Spencer package can still be used, also with other cameras than the ZED camera
 
 
 <p align='center'>
-    <img src="images/tracking_5_persons_img.jpg" height="300"></img>
-    <img src="images/tracking_5_persons_sim.jpg" height="300"></img>
+    <img src="images/tracking_5_persons_img.jpg" height="300" alt="YOLO Detections in RGB image"></img>
+    <img src="images/tracking_5_persons_sim.jpg" height="300" alt="Detections and Tracks of pedestrians in rviz. Yellow boxes: LIDAR based detections. Blue boxes: YOLO detections."></img>
 </p>
 
 
