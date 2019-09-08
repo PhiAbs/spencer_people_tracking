@@ -21,6 +21,8 @@ The most important features of this package are listed here:
     <img src="images/tracking_5_persons_sim.jpg" width="400" alt="Detections and Tracks of pedestrians in rviz. Yellow boxes: LIDAR based detections. Blue boxes: YOLO detections."></img>
 </p>
 
+![YOLO Detections in RGB image](images/tracking_5_persons_img.jpg "title-1") ![Detections and Tracks of pedestrians in rviz. Yellow boxes: LIDAR based detections. Blue boxes: YOLO detections](images/tracking_5_persons_sim.jpg "title-2")
+
 
 ## Sensor Requirements
 This package has been tested with the following Sensors:
