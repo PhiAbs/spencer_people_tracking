@@ -3,13 +3,28 @@ This package extends the existing Spencer People Tracker with a data-driven, RGB
 The Spencer People Tracker already provides RGB-D based pedestrian detectors. With YOLO, however, pedestrians can be detected more reliably. 
 The YOLO detector has been integrated into the Spencer People Tracking package as an additional pedestrian detector. The other detectors can still be used if one wishes to do so. 
 
+- **YOLOv3 object detector for RGB based pedestrian detection:** Instead of the upper body detector, one can use YOLOv3 for pedestrian detection, in combination with the package available at https://github.com/PhiAbs/zed-yolo and the ZED stereo camera. The different detectors can be turned on or off in the jackal_tracking.launch file.
+- **Realsense data type converter:** The depth image coming from the realsense d435 camera had a wrong format. The file from https://gist.github.com/tim-fan/a2abe1fe15cce8111d06c5c2187c7e97 was included in a new package which allows to use the realsense camera together with the upper body detector.
+- **Static laser calibration:** The laser detections had an offset in x direction (away from the robot). The package static_calibration subtracts this offset. 
+- **Providing information for data driven trajectory prediction:** The package trajectory_prediction publishes information on some ROS topics that can be used for data driven trajectory prediction.
+
 The complete Pipeline looks as follows: 
-[Pedestrian detection and tracking pipeline](detection_tracking_prediction_pipeline.png)
+<div align='center'>
+<img src="images/detection_tracking_prediction_pipeline.png"></img>
+</div>
+
+More information about the Spencer People Tracking pipeline can be found [here](spencer_people_tracking/README.md)
 
 ## Results
+<div align='center'>
+<img src="images/tracking_5_persons.png"></img>
+</div>
 
-[Tracking several pedestrians at once](tracking_5_persons.png)
 
+## Sensor Requirements
+This package has been tested with the following Sensors:
+- [Velodyne VLP16 LIDAR](https://velodynelidar.com/vlp-16.html)
+- [Stereolabs ZED Stereo camera](https://www.stereolabs.com/zed/)
 
 ## Software Requirements
 - Ubuntu 16.04
@@ -54,6 +69,8 @@ and place them in here:
 
 
 ## Running the Detection-Tracking-Pipeline 
+
+### Launch the YOLO Pedestrian detection module
 There are two different launch files available, one for either of the two weight files:
 
 lighweight model:
@@ -63,5 +80,8 @@ lighweight model:
 normal model:
 
     roslaunch yolo_pedestrian_detector pedestrian_detector.launch
+
+### Launch the Spencer people tracking pipeline
+roslaunch spencer_people_tracking_launch jackal_tracking.launch
 
 
